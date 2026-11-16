@@ -1,20 +1,18 @@
-// cursor-swarm: a director plans page regions, then one pi agent per region streams JSONL edit ops.
+// cursor-swarm: a planner splits a page into regions, then one agent per region streams JSONL edit ops.
 // Every op the browser animates is a line a model wrote (or, in mock mode, a clearly labelled generator).
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { getCatalog, paletteText, names as reuiNames } from './reui.mjs';
+import { agentCall, listAgents } from './agents.mjs';
 
 const PORT = Number(process.env.PORT ?? 8981);
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(DIR, 'public');
 const SESS = path.join(DIR, 'sessions');
 fs.mkdirSync(SESS, { recursive: true });
-const PI = process.env.PI_BIN ?? 'pi';
 const PAGE_W = 1440;
-const PI_FLAGS = ['--mode', 'rpc', '--no-tools', '--no-extensions', '--no-skills', '--no-context-files', '--no-prompt-templates', '--no-session'];
 
 const clients = new Set();
 let run = null; // { id, log: [], procs: Set, stopped, gov }
@@ -26,50 +24,6 @@ function broadcast(ev) {
   }
   const line = `data: ${JSON.stringify(ev)}\n\n`;
   for (const res of clients) res.write(line);
-}
-
-// ---------- pi implant: one `pi --mode rpc` process per call, LF-delimited JSON both ways ----------
-function piCall({ model, system, prompt, onText, onThought }) {
-  return new Promise((resolve) => {
-    const args = [...PI_FLAGS, '--system-prompt', system];
-    const slash = model.indexOf('/');
-    if (slash > 0) args.push('--provider', model.slice(0, slash), '--model', model.slice(slash + 1));
-    else args.push('--model', model);
-    const proc = spawn(PI, args, { stdio: ['pipe', 'pipe', 'pipe'] });
-    run?.procs.add(proc);
-    let buf = '', text = '', usage = null, error = null, stderr = '', settled = false;
-    const finish = () => {
-      if (settled) return; settled = true;
-      run?.procs.delete(proc); proc.kill();
-      resolve({ text, usage, error });
-    };
-    proc.stderr.on('data', (d) => { stderr = (stderr + d).slice(-600); });
-    proc.on('error', (e) => { error = `spawn failed: ${e.message}`; finish(); });
-    proc.on('exit', (code) => { if (!settled && !error) error = `pi exited (${code}) ${stderr.trim().split('\n').pop() ?? ''}`; finish(); });
-    proc.stdout.on('data', (d) => {
-      buf += d;
-      let i;
-      while ((i = buf.indexOf('\n')) >= 0) {
-        const line = buf.slice(0, i); buf = buf.slice(i + 1);
-        if (!line.trim()) continue;
-        let m; try { m = JSON.parse(line); } catch { continue; }
-        if (m.type === 'response' && m.success === false) { error = `${m.command}: ${m.error ?? 'failed'}`; finish(); }
-        else if (m.type === 'message_update') {
-          const e = m.assistantMessageEvent ?? {};
-          if (e.type === 'text_delta') { text += e.delta; onText?.(e.delta); }
-          else if (e.type === 'thinking_delta') onThought?.(e.delta);
-        } else if (m.type === 'message_end' && m.message?.role === 'assistant') {
-          const u = m.message.usage;
-          if (u) usage = { in: u.input ?? 0, out: u.output ?? 0, cost: u.cost?.total ?? 0 };
-          if (m.message.stopReason === 'error') error = m.message.errorMessage ?? 'model error';
-        } else if (m.type === 'agent_end') finish();
-        else if (m.type === 'extension_ui_request' && ['select', 'confirm', 'input', 'editor'].includes(m.method)) {
-          proc.stdin.write(JSON.stringify({ type: 'extension_ui_response', id: m.id, cancelled: true }) + '\n');
-        }
-      }
-    });
-    proc.stdin.write(JSON.stringify({ id: 'p1', type: 'prompt', message: prompt }) + '\n');
-  });
 }
 
 // ---------- director ----------
@@ -195,8 +149,8 @@ async function runWorker(me, i, plan, cfg) {
     if (op) { ops++; send({ t: 'op', op }); }
   };
   send({ t: 'agent', status: 'working' });
-  const res = await piCall({
-    model: cfg.model,
+  const res = await agentCall({
+    spec: cfg.model, track: me.procs,
     system: workerSys(plan.style, plan.regions.length),
     prompt: `Page: ${plan.title}\nOverall brief: ${cfg.prompt}\nYour region: "${r.name}", ${r.w}px wide by ${r.h}px tall, located at x=${r.x}, y=${r.y} of a ${PAGE_W}x${plan.pageH}px page.\nYour brief: ${r.brief}${r.component ? `\nRender the ReUI "${r.component}" component${plan.summ?.[r.component] ? ` (${plan.summ[r.component]})` : ''}. Reproduce its real ReUI appearance with the op primitives.` : ''}\nEmit your JSONL operations now.`,
     onText: (d) => {
@@ -283,7 +237,7 @@ async function startRun(cfg) {
     broadcast({ t: 'director', status: 'working', model: cfg.director });
     let pend = '';
     const fl = setInterval(() => { if (pend && run === me) { broadcast({ t: 'tok', a: -1, d: pend }); pend = ''; } }, 120);
-    const ask = (model) => piCall({ model, system: sys, prompt: `Agent count: ${cfg.agents}\nPage to design: ${cfg.prompt}`, onText: (d) => { pend += d; } });
+    const ask = (model) => agentCall({ spec: model, track: me.procs, system: sys, prompt: `Agent count: ${cfg.agents}\nPage to design: ${cfg.prompt}`, onText: (d) => { pend += d; } });
     let res = await ask(cfg.director), note = '';
     if (me.stopped) { clearInterval(fl); return; }
     let parsed = null;
@@ -335,9 +289,14 @@ const server = http.createServer((req, res) => {
   if (url.pathname === '/events') {
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
     res.write('retry: 1500\n\n');
-    if (run) for (const ev of run.log) res.write(`data: ${JSON.stringify(ev)}\n\n`);
+    // A page that connects mid-run catches up; finished runs are reached through /sessions instead.
+    if (run && !run.ended) for (const ev of run.log) res.write(`data: ${JSON.stringify(ev)}\n\n`);
     clients.add(res);
     req.on('close', () => clients.delete(res));
+    return;
+  }
+  if (url.pathname === '/agents') {
+    listAgents().then((a) => res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(a)));
     return;
   }
   if (url.pathname === '/sessions') {
@@ -378,8 +337,8 @@ const server = http.createServer((req, res) => {
       const cfg = {
         prompt: String(b.prompt ?? '').slice(0, 2000) || 'A landing page for a note-taking app',
         agents: num(b.agents, 1, 48, 12),
-        model: String(b.model ?? 'cerebras/qwen-3.8-27b').slice(0, 120),
-        director: String(b.director ?? b.model ?? 'cerebras/qwen-3.8-27b').slice(0, 120),
+        model: String(b.model ?? 'cerebras/qwen-3.8-27b').slice(0, 160),
+        director: String(b.director || b.model || 'cerebras/qwen-3.8-27b').slice(0, 160),
         mode: b.mode === 'mock' ? 'mock' : 'pi',
         concurrency: num(b.concurrency, 1, 48, 10),
         rpm: num(b.rpm, 1, 2000, 120),

@@ -78,6 +78,44 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 350px; min-height: 0
 .cursor svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
 .cursor span { position: absolute; left: 14px; top: 16px; font: 600 11px var(--mono); color: #fff; padding: 2px 6px; border-radius: 3px 8px 8px 8px; white-space: nowrap; }
 
+/* start screen */
+body.start .stagecol, body.start aside { display: none; }
+body.start main { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+body:not(.start) #start { display: none; }
+body.start #prompt, body.start .agents, body.start #go, body.start #stop, body.start #newRun { display: none; }
+body.start .bar { justify-content: space-between; }
+#start { overflow: auto; padding: 7vh 18px 48px; }
+.composer { max-width: 780px; margin: 0 auto; display: grid; gap: 18px; }
+.composer h2 { font-size: 30px; margin: 0; letter-spacing: -.02em; text-align: center; }
+.composer > p { margin: -6px auto 4px; color: var(--dim); text-align: center; font-size: 15px; line-height: 1.5; max-width: 600px; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
+.box:focus-within { border-color: var(--accent); }
+.box textarea { display: block; width: 100%; border: 0; background: none; resize: none; padding: 16px 18px 10px; font: inherit; font-size: 16px; line-height: 1.45; outline: none; color: var(--ink); }
+.boxbar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--line); }
+.boxbar label { display: flex; align-items: center; gap: 6px; color: var(--dim); font-size: 12px; white-space: nowrap; }
+.boxbar .sp { flex: 1; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chips button { border-radius: 999px; font-weight: 500; background: var(--panel); padding: 6px 13px; color: var(--dim); }
+.chips button:hover { color: var(--ink); border-color: var(--accent); }
+.composer h3 { margin: 14px 0 -6px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); }
+#recent { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+#recent .saved { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); min-width: 0; }
+.steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; color: var(--dim); font-size: 12.5px; }
+.steps b { color: var(--ink); font-weight: 600; }
+
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--line); }
+.role { display: grid; gap: 6px; padding: 10px 12px; min-width: 0; }
+.role + .role { border-left: 1px solid var(--line); }
+.rl { font-weight: 600; font-size: 12px; display: flex; gap: 8px; align-items: baseline; }
+.rl small { font-weight: 400; color: var(--dim); }
+.pick { display: flex; gap: 6px; min-width: 0; text-transform: none; letter-spacing: 0; font-size: 13px; }
+.pick select { flex: none; max-width: 46%; }
+.pick input { flex: 1 1 120px; min-width: 0; font-family: var(--mono); font-size: 12px; }
+.settings .pick { width: 330px; }
+.agentnote { padding: 8px 12px; border-top: 1px solid var(--line); color: var(--dim); font-size: 12px; line-height: 1.4; }
+.agentnote.warn { color: var(--warn); }
+@media (max-width: 640px) { .roles { grid-template-columns: 1fr; } .role + .role { border-left: 0; border-top: 1px solid var(--line); } }
+
 /* side panel */
 aside { background: var(--panel); border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto 1fr; min-height: 0; }
 #gov { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
@@ -114,10 +152,11 @@ aside { background: var(--panel); border-left: 1px solid var(--line); display: g
 }
 </style>
 </head>
-<body>
+<body class="start">
 <header>
   <div class="bar">
     <div class="brand"><svg width="16" height="18" viewBox="0 0 18 20" aria-hidden="true"><path d="M1 1l5.2 17 2.6-7.2 7.2-2.6z" fill="currentColor"/></svg>Cursor Swarm</div>
+    <button id="newRun" type="button" title="Back to the start screen">New</button>
     <input id="prompt" aria-label="Describe the page or app to build" placeholder="Describe a page or app to build, e.g. “Pricing page for a calm note-taking app”">
     <label class="agents">Agents <input id="agents" type="number" min="1" max="48" value="24" title="One agent, one cursor, one region"></label>
     <button id="go" class="primary">Run swarm</button>
@@ -126,25 +165,43 @@ aside { background: var(--panel); border-left: 1px solid var(--line); display: g
   </div>
   <div class="settings" id="settings" hidden>
     <label>Driver<select id="mode"><option value="pi">Live pi agents</option><option value="mock">Mock (no model)</option></select></label>
-    <label>Worker model<input id="model" list="models" value="cerebras/qwen-3.8-27b" size="26"></label>
-    <label>Director model<input id="director" list="models" value="cerebras/qwen-3.8-27b" size="26"></label>
-    <datalist id="models">
-      <option value="cerebras/qwen-3.8-27b">Qwen3.8 27B (Cerebras, fast)</option>
-      <option value="cerebras/gpt-oss-120b">GPT-OSS 120B (Cerebras)</option>
-      <option value="openrouter/anthropic/claude-haiku-4.5">Claude Haiku 4.5 (OpenRouter)</option>
-      <option value="opencode/claude-haiku-4-5">Claude Haiku 4.5 (OpenCode)</option>
-      <option value="opencode/claude-sonnet-5">Claude Sonnet 5 (OpenCode)</option>
-    </datalist>
+    <input id="director" type="hidden" value="cerebras/qwen-3.8-27b"><input id="model" type="hidden" value="cerebras/qwen-3.8-27b">
+    <label>Planner<span class="pick" data-pick="director"></span></label>
+    <label>Workers<span class="pick" data-pick="model"></span></label>
     <label>Parallel<input id="concurrency" type="number" min="1" max="48" value="10" title="Most worker agents calling the model at once"></label>
     <label>Launches / min<input id="rpm" type="number" min="1" max="2000" value="120" title="Governor: cap on new model requests per minute"></label>
-    <span class="hint">Models are any <code>provider/model</code> your <code>pi</code> CLI can reach.</span>
+    <span class="hint">The planner makes one call per run. Each worker makes one call.</span>
   </div>
 </header>
 <main>
+  <section id="start">
+    <div class="composer">
+      <h2>What should the swarm build?</h2>
+      <p>Describe a page or an app screen. A planner splits it into regions and one worker agent per region draws its part live, each with its own cursor.</p>
+      <div class="box">
+        <textarea id="startPrompt" rows="3" aria-label="Describe the page or app to build" placeholder="e.g. Landing page for a calm note-taking app for researchers, with pricing and testimonials"></textarea>
+        <div class="roles">
+          <div class="role"><span class="rl">Planner<small>splits the page, 1 call</small></span><span class="pick" data-pick="director"></span></div>
+          <div class="role"><span class="rl">Workers<small>one per region, in parallel</small></span><span class="pick" data-pick="model"></span></div>
+        </div>
+        <div id="agentNote" class="agentnote" hidden></div>
+        <div class="boxbar">
+          <label>Agents <input id="startAgents" type="number" min="1" max="48" value="24" title="How many workers, cursors and regions"></label>
+          <span class="sp"></span>
+          <button id="startGo" class="primary">Run swarm</button>
+        </div>
+      </div>
+      <div class="chips" id="examples"></div>
+      <div class="steps"><span><b>1</b> Planner splits the page</span><span><b>2</b> Agents draw in parallel</span><span><b>3</b> Run is saved for replay</span></div>
+      <h3 id="recentHead" hidden>Recent runs</h3>
+      <div id="recent"></div>
+    </div>
+  </section>
   <div class="stagecol">
     <div class="stagebar">
       <span id="pill" class="pill">IDLE</span>
       <span id="detail">Nothing running</span>
+      <button id="again" class="small" hidden title="Watch this run again. No model calls.">Replay again</button>
       <label class="speed"><span>Cursor speed</span><input id="speed" type="range" min="0.4" max="4" step="0.1" value="1"></label>
     </div>
     <div id="progress"><i></i></div>
@@ -203,14 +260,6 @@ function tab(which) {
 }
 $('tabAgents').onclick = () => tab('agents'); $('tabSaved').onclick = () => tab('saved');
 
-function showEmpty() {
-  const box = el('div'); box.id = 'empty';
-  box.append(el('h2', '', 'Watch a swarm of agents build a UI'), el('p', '', 'A director splits your page into regions. One agent per region draws it live, each with its own cursor. Every stroke is a line a model wrote.'));
-  const chips = el('div', 'chips');
-  for (const ex of EXAMPLES) { const b = el('button', '', ex); b.onclick = () => { $('prompt').value = ex; $('prompt').focus(); }; chips.append(b); }
-  box.append(chips); page.append(box);
-}
-
 function row(name, sub, color) {
   const r = el('div', 'row');
   const dot = el('i'); dot.style.background = color;
@@ -228,7 +277,7 @@ function reset() {
   page.style.background = '#fff'; page.style.height = '640px';
   for (const id of ['gA', 'gQ', 'gD', 'gR', 'gI', 'gO']) $(id).textContent = '0';
   $('gC').textContent = '$0'; $('gT').textContent = '–';
-  director = row('Director', 'plans the regions', '#888');
+  director = row('Planner', 'splits the page into regions', '#888');
   progress(); fit();
 }
 
@@ -344,20 +393,39 @@ function setForm(c) {
   if (c.mode) $('mode').value = c.mode;
   if (c.model) $('model').value = c.model;
   if (c.director) $('director').value = c.director;
+  syncPickers();
   if (c.concurrency) $('concurrency').value = c.concurrency;
   if (c.rpm) $('rpm').value = c.rpm;
 }
-function buttons() { $('go').disabled = running || replaying; $('stop').disabled = !(running || replaying); renderSaved(); }
+function buttons() {
+  const busy = running || replaying;
+  $('go').disabled = busy; $('stop').disabled = !busy; $('newRun').disabled = busy;
+  $('again').hidden = busy || !sessions.some((s) => String(s.id) === String(currentId));
+  renderSaved();
+}
+function enterStart() {
+  if (running || replaying) return;
+  document.body.classList.add('start');
+  $('startPrompt').value = $('prompt').value; $('startAgents').value = $('agents').value; syncPickers();
+  renderSaved(); $('startPrompt').focus();
+}
+function startRun() {
+  const prompt = $('startPrompt').value.trim();
+  if (!prompt) { $('startPrompt').focus(); return; }
+  $('prompt').value = prompt; $('agents').value = $('startAgents').value;
+  $('go').click();
+}
 
 function onEvent(ev) {
   switch (ev.t) {
     case 'run': {
+      document.body.classList.remove('start');
       reset(); failed = false; t0 = ev.id; currentId = ev.id; setForm(ev.cfg); tab('agents');
       clearInterval(timer);
       if (replaying) setState('replay', 'REPLAY', '', 'saved run, no model calls');
       else {
         running = true;
-        setState(ev.cfg.mode === 'mock' ? 'mock' : 'live', ev.cfg.mode === 'mock' ? 'MOCK' : 'LIVE', '', ev.cfg.mode === 'mock' ? 'scripted, no model is running' : `director is planning on ${ev.cfg.director}`);
+        setState(ev.cfg.mode === 'mock' ? 'mock' : 'live', ev.cfg.mode === 'mock' ? 'MOCK' : 'LIVE', '', ev.cfg.mode === 'mock' ? 'scripted, no model is running' : `planner is working on ${ev.cfg.director}`);
         timer = setInterval(() => { $('gT').textContent = Math.round((Date.now() - t0) / 1000) + 's'; }, 500);
       }
       buttons(); break;
@@ -402,25 +470,28 @@ function onEvent(ev) {
 /* saved runs */
 async function loadSessions() {
   try { sessions = await (await fetch('/sessions')).json(); } catch { sessions = []; }
-  renderSaved();
+  buttons();
+}
+function savedCard(s) {
+  const busy = running || replaying;
+  const card = el('div', 'saved' + (String(s.id) === String(currentId) ? ' current' : ''));
+  const when = new Date(s.mtime).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const t = el('div', 't', s.title || '(untitled)'); t.title = s.cfg?.prompt ?? '';
+  const model = s.cfg?.mode === 'mock' ? 'mock' : (s.cfg?.model ?? '').split('/').pop();
+  const m = el('div', 'm', `${s.regions} agents · ${s.ops} ops · ${model} · ${when}${s.ended ? '' : ' · partial'}`); m.title = m.textContent;
+  const a = el('div', 'a');
+  const rp = el('button', 'small', 'Replay'); rp.title = 'Watch this run again. No model calls.'; rp.disabled = busy; rp.onclick = () => replay(s.id);
+  const rr = el('button', 'small ghost', 'Run again live'); rr.title = 'Start a new live run with the same prompt and settings.'; rr.disabled = busy;
+  rr.onclick = () => { setForm(s.cfg); $('go').click(); };
+  a.append(rp, rr); card.append(t, m, a); return card;
 }
 function renderSaved() {
   const box = $('saved'); box.replaceChildren();
   $('tabSaved').textContent = sessions.length ? `Saved runs ${sessions.length}` : 'Saved runs';
-  if (!sessions.length) { box.append(el('div', 'note', 'Runs are saved here automatically. Replay one any time without calling a model.')); return; }
-  const busy = running || replaying;
-  for (const s of sessions) {
-    const card = el('div', 'saved' + (String(s.id) === String(currentId) ? ' current' : ''));
-    const when = new Date(s.mtime).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const t = el('div', 't', s.title || '(untitled)'); t.title = s.cfg?.prompt ?? '';
-    const model = s.cfg?.mode === 'mock' ? 'mock' : (s.cfg?.model ?? '').split('/').pop();
-    const m = el('div', 'm', `${s.regions} agents · ${s.ops} ops · ${model} · ${when}${s.ended ? '' : ' · partial'}`);
-    const a = el('div', 'a');
-    const rp = el('button', 'small', 'Replay'); rp.title = 'Watch this run again. No model calls.'; rp.disabled = busy; rp.onclick = () => replay(s.id);
-    const rr = el('button', 'small ghost', 'Run again live'); rr.title = 'Start a new live run with the same prompt and settings.'; rr.disabled = busy;
-    rr.onclick = () => { setForm(s.cfg); $('go').click(); };
-    a.append(rp, rr); card.append(t, m, a); box.append(card);
-  }
+  if (!sessions.length) box.append(el('div', 'note', 'Runs are saved here automatically. Replay one any time without calling a model.'));
+  for (const s of sessions) box.append(savedCard(s));
+  const recent = $('recent'); recent.replaceChildren(); $('recentHead').hidden = !sessions.length;
+  for (const s of sessions.slice(0, 6)) recent.append(savedCard(s));
 }
 async function replay(id) {
   let evs = []; try { evs = await (await fetch('/session?id=' + encodeURIComponent(id))).json(); } catch {}
@@ -450,6 +521,43 @@ function stopReplay() {
   $('pill').className = 'pill err'; $('pill').textContent = 'STOPPED'; buttons();
 }
 
+/* planner and worker pickers: an agent CLI plus any model it can reach */
+let AG = [];
+const pickers = [];
+function parseSpec(v) { const m = /^([a-z]+):(.*)$/.exec(v || ''); return m && AG.some((a) => a.id === m[1]) ? { agent: m[1], model: m[2] } : { agent: 'pi', model: v || '' }; }
+const toSpec = (agent, model) => (agent === 'pi' ? model : `${agent}:${model}`);
+function syncPickers() {
+  for (const sync of pickers) sync();
+  const notes = [];
+  for (const [role, id] of [['Planner', 'director'], ['Workers', 'model']]) {
+    const a = AG.find((x) => x.id === parseSpec($(id).value).agent);
+    if (a?.note && !notes.some((n) => n.endsWith(a.note))) notes.push(`${a.name}: ${a.note}`);
+  }
+  $('agentNote').hidden = !notes.length; $('agentNote').textContent = notes.join(' ');
+  $('agentNote').classList.toggle('warn', [$('director').value, $('model').value].some((v) => AG.find((x) => x.id === parseSpec(v).agent)?.warn));
+}
+function makePicker(host) {
+  const target = host.dataset.pick;
+  const sel = el('select'); sel.setAttribute('aria-label', 'Agent');
+  const inp = el('input'); inp.setAttribute('aria-label', 'Model'); inp.placeholder = 'model'; inp.spellcheck = false;
+  for (const a of AG) { const o = el('option', '', a.ok ? a.name : `${a.name} (${a.why || 'unavailable'})`); o.value = a.id; o.disabled = !a.ok; sel.append(o); }
+  host.append(sel, inp);
+  const commit = () => { $(target).value = toSpec(sel.value, inp.value.trim()); syncPickers(); };
+  sel.onchange = () => { inp.value = AG.find((a) => a.id === sel.value)?.default ?? ''; commit(); };
+  inp.onchange = commit;
+  pickers.push(() => { const { agent, model } = parseSpec($(target).value); sel.value = agent; inp.value = model; inp.setAttribute('list', 'dl-' + agent); inp.title = `${AG.find((a) => a.id === agent)?.models.length ?? 0} models available. Type to search.`; });
+}
+async function loadAgents() {
+  try { AG = await (await fetch('/agents')).json(); } catch { AG = []; }
+  for (const a of AG) {
+    const dl = el('datalist'); dl.id = 'dl-' + a.id;
+    for (const m of a.models) { const o = el('option'); o.value = m; dl.append(o); }
+    document.body.append(dl);
+  }
+  document.querySelectorAll('[data-pick]').forEach(makePicker);
+  syncPickers();
+}
+
 /* controls */
 const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body ?? {}) });
 $('go').onclick = () => {
@@ -459,9 +567,14 @@ $('go').onclick = () => {
 };
 $('stop').onclick = () => (replaying ? stopReplay() : post('/stop'));
 $('prompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !running && !replaying) $('go').click(); });
+$('newRun').onclick = enterStart;
+$('again').onclick = () => { if (currentId) replay(currentId); };
+$('startGo').onclick = startRun;
+$('startPrompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startRun(); } });
+for (const ex of EXAMPLES) { const b = el('button', '', ex); b.onclick = () => { $('startPrompt').value = ex; $('startPrompt').focus(); }; $('examples').append(b); }
 $('settingsToggle').onclick = () => { const s = $('settings'); s.hidden = !s.hidden; $('settingsToggle').setAttribute('aria-expanded', !s.hidden); fit(); };
 
-showEmpty(); fit(); loadSessions();
+enterStart(); loadSessions(); loadAgents();
 const es = new EventSource('/events');
 es.onmessage = (m) => { if (!replaying) onEvent(JSON.parse(m.data)); };
 </script>
