@@ -1,0 +1,483 @@
+{"t":"meta","id":1794792594093,"cfg":{"prompt":"A knowledge-graph \"second brain\" desktop app, React Flow style, dark UI. Lay it out like a real app shell and build exactly these 24 areas, ONE region per agent (24 cols total), each placed to match its region hint:\n- A01 app-shell (root frame), A02 top-command-bar (top), A03 command-palette (modal strip), A04 kb-explorer (left-top sidebar tree), A05 search-filters (left-bottom), A06 graph-canvas (large center), A07 note-node, A08 concept-node, A09 source-node, A10 cluster-node, A11 agent-node (small node cards on the canvas), A12 edge-system (edge legend), A13 minimap-controls (bottom-right overlay), A14 layout-switcher (top-right overlay), A15 context-menu, A16 hover-preview, A17 node-inspector (right panel), A18 markdown-editor (right panel), A19 activity-feed (right panel), A20 proposal-review (right panel), A21 ask-the-graph (right panel chat), A22 timeline-scrubber (bottom dock), A23 ingest-import (modal), A24 status-legend (status bar).\nUse realistic labels and copy for a research knowledge graph. Pick the fitting ReUI component per region (tree, data-grid, timeline, code-block, badge, frame, stepper, autocomplete, rating, etc.).","agents":24,"model":"cerebras/qwen-3.8-27b","director":"cerebras/qwen-3.8-27b","mode":"pi","concurrency":10,"rpm":120},"started":"2026-11-16T01:29:54.093Z"}
+{"t":"run","id":1794792594093,"cfg":{"prompt":"A knowledge-graph \"second brain\" desktop app, React Flow style, dark UI. Lay it out like a real app shell and build exactly these 24 areas, ONE region per agent (24 cols total), each placed to match its region hint:\n- A01 app-shell (root frame), A02 top-command-bar (top), A03 command-palette (modal strip), A04 kb-explorer (left-top sidebar tree), A05 search-filters (left-bottom), A06 graph-canvas (large center), A07 note-node, A08 concept-node, A09 source-node, A10 cluster-node, A11 agent-node (small node cards on the canvas), A12 edge-system (edge legend), A13 minimap-controls (bottom-right overlay), A14 layout-switcher (top-right overlay), A15 context-menu, A16 hover-preview, A17 node-inspector (right panel), A18 markdown-editor (right panel), A19 activity-feed (right panel), A20 proposal-review (right panel), A21 ask-the-graph (right panel chat), A22 timeline-scrubber (bottom dock), A23 ingest-import (modal), A24 status-legend (status bar).\nUse realistic labels and copy for a research knowledge graph. Pick the fitting ReUI component per region (tree, data-grid, timeline, code-block, badge, frame, stepper, autocomplete, rating, etc.).","agents":24,"model":"cerebras/qwen-3.8-27b","director":"cerebras/qwen-3.8-27b","mode":"pi","concurrency":10,"rpm":120},"pageW":1440}
+{"t":"reui","source":"mcp.reui.io","count":27}
+{"t":"director","status":"working","model":"cerebras/qwen-3.8-27b"}
+{"t":"director","status":"done","note":"","usage":{"in":404,"out":8577,"cost":0.00657415}}
+{"t":"plan","title":"Cortex — Second Brain Knowledge Graph","style":{"bg":"#0b0e14","surface":"#141821","text":"#e6e9ef","muted":"#8a93a6","accent":"#5b8cff","accent2":"#a079ff","font":"sans","radius":12},"regions":[{"name":"A01 app-shell","brief":"Desktop window chrome for 'Cortex — Second Brain': three traffic-light dots on the left, centered window title 'cortex.app · Predictive Processing', and a 1px surface border framing the entire shell below.","component":"frame","x":0,"y":0,"w":1440,"h":80},{"name":"A02 top-command-bar","brief":"Top command bar with a global search input 'Ask Cortex… (⌘K)' and dropdown hints, breadcrumb '/Predictive Processing/Feature Prediction', and right-side 'Ingest', 'Share' buttons plus a sync badge 'All nodes synced · 2m ago'.","component":"autocomplete","x":0,"y":80,"w":1440,"h":80},{"name":"A03 command-palette","brief":"Command-palette modal strip listing quick actions: 'Create linked note' (⌘N), 'Find citations to Barak & Costa 2016' (⌘⇧F), 'Layout: Force-Directed' (⌘L), 'Tag selection #dopamine', each row with a left icon and right shortcut, keyboard-highlight on the first row.","component":"frame","x":0,"y":160,"w":1440,"h":96},{"name":"A04 kb-explorer","brief":"Left-top 'Knowledge Bases' sidebar tree: expandable 'Predictive Processing' (23) with children 'Active Inference' (9), 'Precision & Gain' (7), 'Free Energy Principle' (4), plus 'Motor Control' (11); show per-node document count badges and a +New root button.","component":"tree","x":0,"y":256,"w":360,"h":250},{"name":"A06 graph-canvas","brief":"Large center canvas: faint dotted grid and vignette; a hub node 'Feature Prediction' near (720,320) with radiating links fanning left and right; bottom-left hint 'scroll to zoom · drag to pan' and top edge fades into the overlays.","component":"frame","x":360,"y":256,"w":720,"h":250},{"name":"A17 node-inspector","brief":"Right panel 'Inspector — Feature Prediction' as a data-grid of properties (Type=Concept, Confidence=0.94, Sources=3, Updated=2d ago, Tags) with a sortable column header and a small '14 links' footer tab.","component":"data-grid","x":1080,"y":256,"w":360,"h":250},{"name":"A05 search-filters","brief":"Left-bottom filter builder beneath the tree: stepped chips 'node_type = concept', 'source_doi exists', 'last_updated > 30d', 'cited_by ≥ 5' composing a boolean query, with a live '12 results' count and a Reset link.","component":"filters","x":0,"y":506,"w":360,"h":200},{"name":"A07 note-node","brief":"Primary note-node card 'Feature Prediction' on the canvas: title, 2-line body 'The cortex estimates future sensory states before they arrive…', a pin icon, tag chips 'CORE' and 'ACTIVE', and a '14 links' connection count.","component":"frame","x":360,"y":506,"w":240,"h":200},{"name":"A08 concept-node","brief":"Concept-node 'Precision Weighting' as a rounded icon-tile with a brain glyph and a violet accent border (concept type), label beneath, and a small degree badge '7'.","component":"icon-tile","x":600,"y":506,"w":240,"h":200},{"name":"A09 source-node","brief":"Source-node pill 'Barak & Costa 2016 · PNAS' as a compact italic badge with a PDF file-type dot and hover affordance showing '347 citations' on hover.","component":"badge","x":840,"y":506,"w":240,"h":200},{"name":"A18 markdown-editor","brief":"Right-panel 'Edit · feature-prediction.md' markdown editor as a Shiki-highlighted code block with line numbers, a 'Saved ✓' gutter and a Preview toggle; content reads '# Feature Prediction — the cortex encodes an expected stimulus…'.","component":"code-block","x":1080,"y":506,"w":360,"h":200},{"name":"A10 cluster-node","brief":"Cluster-node 'Active Inference (9)' as a dashed-outline icon-tile group with a stacked-layers glyph and an 'expand' hint; sits at the left edge of the canvas.","component":"icon-tile","x":0,"y":706,"w":240,"h":190},{"name":"A11 agent-node","brief":"Small agent-node card 'Cortex-Agent · Summarizing' with a pulsing amber status dot and a tiny progress line 'ingesting 3/12 papers'; amber accent border to read as active/working.","component":"icon-tile","x":240,"y":706,"w":240,"h":190},{"name":"A12 edge-system","brief":"Edge-legend panel floating top-left of the canvas listing link styles with 24px line samples and toggles: solid blue 'derived-from', dashed violet 'contradicts', dotted gray 'co-cited'.","component":"frame","x":480,"y":706,"w":240,"h":190},{"name":"A13 minimap-controls","brief":"Bottom-right minimap control (~96×96) showing a micro node-cluster thumbnail, accompanied by a vertical button stack: zoom +, zoom −, fit (⤢), and a 'Reset' text button.","component":"frame","x":720,"y":706,"w":240,"h":190},{"name":"A14 layout-switcher","brief":"Top-right layout switcher as a horizontal stepper 'Force-Directed' (active, accent blue) · 'Layered' · 'Clustered' · 'Radial', each with a tiny 16px layout icon.","component":"stepper","x":960,"y":706,"w":240,"h":190},{"name":"A15 context-menu","brief":"Floating right-click context menu near the Feature Prediction node: 'Open', 'Add link to…', 'Set as hub', 'Pin position', a divider, then 'Archive' and a red 'Delete'.","component":"frame","x":1200,"y":706,"w":240,"h":190},{"name":"A16 hover-preview","brief":"Hover-preview tooltip card anchored near a node: 'Free Energy Principle (FEP)', one line 'Variational framework bounding posterior uncertainty — Friston 2010', with a '↳ 3 open tabs' hint and an 'Open ↵' affordance.","component":"frame","x":0,"y":896,"w":360,"h":190},{"name":"A19 activity-feed","brief":"'Recent' activity timeline in the right panel: '2h — Agent linked Feature Prediction → Precision Weighting', '1d — Barak & Costa 2016 ingested (24 sources)', '3d — Cluster Active Inference collapsed', each with a colored node dot and timestamp.","component":"timeline","x":360,"y":896,"w":360,"h":190},{"name":"A20 proposal-review","brief":"Proposal-review card 'Suggested links (2)': 'Feature Prediction —derived-from→ Active Inference' with [Accept][Reject] and '87%' confidence, plus 'Gain —contradicts→ Fixed-Weighting' at '79% confidence'.","component":"frame","x":720,"y":896,"w":360,"h":190},{"name":"A21 ask-the-graph","brief":"'Ask the Graph' chat panel: input field 'how is precision related to free energy?' and a streamed answer bubble citing '[1] FEP', '[2] Figs. 3' with a 'View sources (2)' chip above a send button.","component":"frame","x":1080,"y":896,"w":360,"h":190},{"name":"A22 timeline-scrubber","brief":"Bottom dock timeline scrubber spanning 'Q3 2023 → Q4 2024' with per-quarter tick marks, two draggable range handles selected to 'Aug 2024–Oct 2024', and a play button 'Annotate by time'.","component":"date-selector","x":0,"y":1086,"w":1440,"h":110},{"name":"A23 ingest-import","brief":"Ingest-import modal 'Import sources' with a drop zone 'Drop PDFs / URLs / folders', a 3-item list (2 .pdf, 1 .url) each with a file-type icon, file size, and a 'Map to…' tag selector, plus Cancel and an accent 'Ingest 3' button.","component":"frame","x":0,"y":1196,"w":1440,"h":120},{"name":"A24 status-legend","brief":"Bottom status bar of status badges: '● Connected' (green), '1,284 nodes', '3,012 edges', 'Layout: Force-Directed', and on the right '100% zoom' with a 'Auto-syncing…' spinner.","component":"badge","x":0,"y":1316,"w":1440,"h":80}],"pageH":1396}
+{"t":"agent","status":"working","a":0}
+{"t":"gov","active":1,"launched":1,"done":0,"failed":0,"retries":0,"tokIn":0,"tokOut":0,"cost":0,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":23}
+{"t":"agent","status":"working","a":1}
+{"t":"gov","active":2,"launched":2,"done":0,"failed":0,"retries":0,"tokIn":0,"tokOut":0,"cost":0,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":22}
+{"t":"agent","status":"working","a":2}
+{"t":"gov","active":3,"launched":3,"done":0,"failed":0,"retries":0,"tokIn":0,"tokOut":0,"cost":0,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":21}
+{"t":"agent","status":"working","a":3}
+{"t":"gov","active":4,"launched":4,"done":0,"failed":0,"retries":0,"tokIn":0,"tokOut":0,"cost":0,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":20}
+{"t":"agent","status":"working","a":4}
+{"t":"gov","active":5,"launched":5,"done":0,"failed":0,"retries":0,"tokIn":0,"tokOut":0,"cost":0,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":19}
+{"t":"op","op":{"op":"box","id":"chrome-bg","x":0,"y":0,"w":1440,"h":80,"fill":"#0d1117","radius":0},"a":0}
+{"t":"op","op":{"op":"box","id":"chrome-top-edge","x":0,"y":0,"w":1440,"h":1,"fill":"#1a2235","radius":0},"a":0}
+{"t":"op","op":{"op":"box","id":"chrome-bottom-border","x":0,"y":79,"w":1440,"h":1,"fill":"#1e2a40","radius":0},"a":0}
+{"t":"op","op":{"op":"box","id":"dot-red","x":24,"y":34,"w":12,"h":12,"fill":"#ff5f57","radius":6},"a":0}
+{"t":"op","op":{"op":"box","id":"dot-yellow","x":44,"y":34,"w":12,"h":12,"fill":"#febc2e","radius":6},"a":0}
+{"t":"op","op":{"op":"box","id":"dot-green","x":64,"y":34,"w":12,"h":12,"fill":"#28c840","radius":6},"a":0}
+{"t":"op","op":{"op":"box","id":"brand-tick","x":96,"y":28,"w":2,"h":24,"fill":"#5b8cff","radius":1},"a":0}
+{"t":"op","op":{"op":"text","id":"brand-label","x":108,"y":30,"w":120,"color":"#8a93a6","size":13,"weight":600,"align":"left","text":"Cortex"},"a":0}
+{"t":"op","op":{"op":"text","id":"win-title","x":420,"y":30,"w":600,"color":"#6b7488","size":13,"weight":400,"align":"center","text":"cortex.app · Predictive Processing"},"a":0}
+{"t":"op","op":{"op":"box","id":"tab-pill","x":260,"y":22,"w":180,"h":36,"fill":"#141821","stroke":"#1e2a40","radius":8},"a":0}
+{"t":"op","op":{"op":"text","id":"tab-text","x":274,"y":32,"w":152,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"Second Brain Graph"},"a":0}
+{"t":"agent","status":"working","a":5}
+{"t":"gov","active":6,"launched":6,"done":0,"failed":0,"retries":0,"tokIn":0,"tokOut":0,"cost":0,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":18}
+{"t":"op","op":{"op":"text","id":"status-hint","x":1240,"y":30,"w":160,"color":"#4a5268","size":11,"weight":400,"align":"right","text":"⌘K  Command"},"a":0}
+{"t":"op","op":{"op":"done"},"a":0}
+{"t":"agent","a":0,"status":"done","ops":13,"usage":{"in":977,"out":2018,"cost":0.00185545},"error":null}
+{"t":"gov","active":5,"launched":6,"done":1,"failed":0,"retries":0,"tokIn":977,"tokOut":2018,"cost":0.00185545,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":18}
+{"t":"agent","status":"working","a":6}
+{"t":"gov","active":6,"launched":7,"done":1,"failed":0,"retries":0,"tokIn":977,"tokOut":2018,"cost":0.00185545,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":17}
+{"t":"agent","status":"working","a":7}
+{"t":"gov","active":7,"launched":8,"done":1,"failed":0,"retries":0,"tokIn":977,"tokOut":2018,"cost":0.00185545,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":16}
+{"t":"agent","status":"working","a":8}
+{"t":"gov","active":8,"launched":9,"done":1,"failed":0,"retries":0,"tokIn":977,"tokOut":2018,"cost":0.00185545,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":15}
+{"t":"op","op":{"op":"box","id":"a02-bg","x":0,"y":0,"w":1440,"h":80,"fill":"#141821"},"a":1}
+{"t":"op","op":{"op":"box","id":"a02-hairline","x":0,"y":79,"w":1440,"h":1,"fill":"#1e2533"},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-crumb1","x":24,"y":30,"w":160,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Predictive Processing"},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-sep","x":188,"y":30,"w":10,"color":"#5a6277","size":13,"weight":400,"align":"left","text":"›"},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-crumb2","x":200,"y":30,"w":140,"color":"#e6e9ef","size":13,"weight":500,"align":"left","text":"Feature Prediction"},"a":1}
+{"t":"op","op":{"op":"box","id":"a02-search","x":340,"y":22,"w":400,"h":36,"fill":"#0b0e14","stroke":"#2a3348","radius":8},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-sicon","x":356,"y":30,"w":16,"color":"#5a6277","size":16,"weight":400,"align":"left","text":"⌕"},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-placeholder","x":378,"y":31,"w":200,"color":"#5a6277","size":14,"weight":400,"align":"left","text":"Ask Cortex…"},"a":1}
+{"t":"op","op":{"op":"box","id":"a02-cmdk","x":694,"y":29,"w":30,"h":22,"fill":"#1e2533","radius":4},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-cmdk-txt","x":699,"y":33,"w":22,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"⌘K"},"a":1}
+{"t":"op","op":{"op":"box","id":"a02-sync-pill","x":1030,"y":26,"w":200,"h":28,"fill":"#0b0e14","stroke":"#1e2533","radius":14},"a":1}
+{"t":"op","op":{"op":"box","id":"a02-dot","x":1046,"y":36,"w":8,"h":8,"fill":"#34d399","radius":4},"a":1}
+{"t":"op","op":{"op":"text","id":"a02-sync-txt","x":1062,"y":32,"w":160,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"All nodes synced · 2m ago"},"a":1}
+{"t":"op","op":{"op":"button","id":"a02-ingest","x":1252,"y":22,"w":84,"h":36,"fill":"#5b8cff","color":"#ffffff","radius":8,"text":"Ingest"},"a":1}
+{"t":"agent","status":"working","a":9}
+{"t":"gov","active":9,"launched":10,"done":1,"failed":0,"retries":0,"tokIn":977,"tokOut":2018,"cost":0.00185545,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":14}
+{"t":"op","op":{"op":"button","id":"a02-share","x":1352,"y":22,"w":64,"h":36,"fill":"#1e2533","color":"#e6e9ef","radius":8,"text":"Share"},"a":1}
+{"t":"op","op":{"op":"done"},"a":1}
+{"t":"agent","a":1,"status":"done","ops":16,"usage":{"in":992,"out":4986,"cost":0.0040867},"error":null}
+{"t":"gov","active":8,"launched":10,"done":2,"failed":0,"retries":0,"tokIn":1969,"tokOut":7004,"cost":0.00594215,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":14}
+{"t":"op","op":{"op":"box","id":"cp-bg","x":0,"y":0,"w":1440,"h":96,"fill":"#141821","stroke":"#5b8cff","radius":12},"a":2}
+{"t":"op","op":{"op":"box","id":"cp-prompt-bg","x":16,"y":16,"w":232,"h":64,"fill":"#0b0e14","radius":8},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-prompt-icon","x":32,"y":38,"w":24,"color":"#8a93a6","size":14,"weight":600,"align":"left","text":"⌘K"},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-prompt-text","x":60,"y":38,"w":180,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Type a command…"},"a":2}
+{"t":"op","op":{"op":"box","id":"cp-item1-bg","x":260,"y":16,"w":285,"h":64,"fill":"#1a2444","stroke":"#5b8cff","radius":8},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item1-icon","x":276,"y":38,"w":24,"color":"#5b8cff","size":15,"weight":400,"align":"left","text":"✎"},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item1-label","x":302,"y":40,"w":170,"color":"#e6e9ef","size":13,"weight":500,"align":"left","text":"Create linked note"},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item1-kbd","x":470,"y":40,"w":60,"color":"#8a93a6","size":12,"weight":500,"align":"right","text":"⌘N"},"a":2}
+{"t":"op","op":{"op":"box","id":"cp-item2-bg","x":553,"y":16,"w":285,"h":64,"fill":"#0f131c","radius":8},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item2-icon","x":569,"y":38,"w":24,"color":"#8a93a6","size":15,"weight":400,"align":"left","text":"⌕"},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item2-label","x":595,"y":40,"w":190,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"Find citations to Barak & Costa 2016"},"a":2}
+{"t":"op","op":{"op":"box","id":"a04-bg","x":0,"y":0,"w":360,"h":250,"fill":"#141821","radius":0},"a":3}
+{"t":"op","op":{"op":"text","id":"cp-item2-kbd","x":760,"y":40,"w":68,"color":"#8a93a6","size":12,"weight":500,"align":"right","text":"⌘⇧F"},"a":2}
+{"t":"op","op":{"op":"box","id":"cp-item3-bg","x":846,"y":16,"w":285,"h":64,"fill":"#0f131c","radius":8},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item3-icon","x":862,"y":38,"w":24,"color":"#8a93a6","size":15,"weight":400,"align":"left","text":"◈"},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item3-label","x":888,"y":40,"w":170,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Layout: Force-Directed"},"a":2}
+{"t":"op","op":{"op":"text","id":"a04-header","x":16,"y":16,"w":160,"color":"#8a93a6","size":12,"weight":600,"align":"left","text":"Knowledge Bases"},"a":3}
+{"t":"op","op":{"op":"text","id":"cp-item3-kbd","x":1058,"y":40,"w":62,"color":"#8a93a6","size":12,"weight":500,"align":"right","text":"⌘L"},"a":2}
+{"t":"op","op":{"op":"box","id":"cp-item4-bg","x":1139,"y":16,"w":285,"h":64,"fill":"#0f131c","radius":8},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item4-icon","x":1155,"y":38,"w":24,"color":"#a079ff","size":15,"weight":600,"align":"left","text":"#"},"a":2}
+{"t":"op","op":{"op":"text","id":"cp-item4-label","x":1181,"y":40,"w":180,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Tag selection #dopamine"},"a":2}
+{"t":"op","op":{"op":"button","id":"a04-new","x":274,"y":12,"w":70,"h":28,"fill":"#1e2433","color":"#e6e9ef","radius":6,"text":"+ New"},"a":3}
+{"t":"op","op":{"op":"box","id":"a04-sep","x":16,"y":48,"w":328,"h":1,"fill":"#1e2433","radius":0},"a":3}
+{"t":"agent","status":"working","a":10}
+{"t":"gov","active":9,"launched":11,"done":2,"failed":0,"retries":0,"tokIn":1969,"tokOut":7004,"cost":0.00594215,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":13}
+{"t":"op","op":{"op":"done"},"a":2}
+{"t":"agent","a":2,"status":"done","ops":20,"usage":{"in":1016,"out":4072,"cost":0.0034096000000000005},"error":null}
+{"t":"gov","active":8,"launched":11,"done":3,"failed":0,"retries":0,"tokIn":2985,"tokOut":11076,"cost":0.00935175,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":13}
+{"t":"op","op":{"op":"text","id":"a04-ch1","x":16,"y":60,"w":14,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"▾"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-n1","x":36,"y":60,"w":200,"color":"#e6e9ef","size":13,"weight":500,"align":"left","text":"Predictive Processing"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-b1","x":312,"y":60,"w":28,"color":"#5b8cff","size":11,"weight":600,"align":"right","text":"23"},"a":3}
+{"t":"op","op":{"op":"box","id":"a04-active","x":52,"y":90,"w":3,"h":18,"fill":"#5b8cff","radius":2},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-n2","x":60,"y":90,"w":180,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Active Inference"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-b2","x":312,"y":90,"w":28,"color":"#8a93a6","size":11,"weight":500,"align":"right","text":"9"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-n3","x":60,"y":120,"w":180,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Precision & Gain"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-b3","x":312,"y":120,"w":28,"color":"#8a93a6","size":11,"weight":500,"align":"right","text":"7"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-n4","x":60,"y":150,"w":200,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Free Energy Principle"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-b4","x":312,"y":150,"w":28,"color":"#8a93a6","size":11,"weight":500,"align":"right","text":"4"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-ch2","x":16,"y":180,"w":14,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"▸"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-n5","x":36,"y":180,"w":160,"color":"#e6e9ef","size":13,"weight":500,"align":"left","text":"Motor Control"},"a":3}
+{"t":"op","op":{"op":"text","id":"a04-b5","x":312,"y":180,"w":28,"color":"#8a93a6","size":11,"weight":600,"align":"right","text":"11"},"a":3}
+{"t":"op","op":{"op":"done"},"a":3}
+{"t":"agent","a":3,"status":"done","ops":18,"usage":{"in":1004,"out":3602,"cost":0.0030529},"error":null}
+{"t":"gov","active":7,"launched":11,"done":4,"failed":0,"retries":0,"tokIn":3989,"tokOut":14678,"cost":0.01240465,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":13}
+{"t":"agent","status":"working","a":11}
+{"t":"gov","active":8,"launched":12,"done":4,"failed":0,"retries":0,"tokIn":3989,"tokOut":14678,"cost":0.01240465,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":12}
+{"t":"op","op":{"op":"box","id":"gc-bg","x":0,"y":0,"w":720,"h":250,"fill":"#0b0e14","radius":0},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-vignette","x":0,"y":0,"w":720,"h":48,"fill":"#141821","radius":0},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-frame","x":8,"y":8,"w":704,"h":234,"fill":"#0b0e14","stroke":"#1e2433","radius":12},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-hub","x":285,"y":46,"w":150,"h":36,"fill":"#5b8cff","radius":10},"a":4}
+{"t":"op","op":{"op":"text","id":"gc-hub-t","x":295,"y":54,"w":130,"color":"#ffffff","size":13,"weight":600,"align":"center","text":"Feature Prediction"},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-link1","x":195,"y":58,"w":90,"h":2,"fill":"#5b8cff","radius":1},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-link2","x":155,"y":80,"w":130,"h":2,"fill":"#3d5a99","radius":1},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-link3","x":120,"y":104,"w":165,"h":2,"fill":"#3d5a99","radius":1},"a":4}
+{"t":"agent","status":"working","a":12}
+{"t":"gov","active":9,"launched":13,"done":4,"failed":0,"retries":0,"tokIn":3989,"tokOut":14678,"cost":0.01240465,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":11}
+{"t":"op","op":{"op":"box","id":"gc-link4","x":435,"y":56,"w":100,"h":2,"fill":"#a079ff","radius":1},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-link5","x":435,"y":78,"w":145,"h":2,"fill":"#6b3fa0","radius":1},"a":4}
+{"t":"op","op":{"op":"box","id":"ins-bg","x":0,"y":0,"w":360,"h":250,"fill":"#141821","radius":12},"a":5}
+{"t":"op","op":{"op":"box","id":"gc-link6","x":435,"y":102,"w":170,"h":2,"fill":"#6b3fa0","radius":1},"a":4}
+{"t":"op","op":{"op":"text","id":"ins-title","x":16,"y":12,"w":200,"color":"#e6e9ef","size":14,"weight":600,"align":"left","text":"Inspector"},"a":5}
+{"t":"op","op":{"op":"box","id":"gc-nodeA","x":80,"y":46,"w":115,"h":28,"fill":"#141821","stroke":"#2a3348","radius":8},"a":4}
+{"t":"op","op":{"op":"text","id":"ins-sub","x":16,"y":30,"w":260,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Feature Prediction"},"a":5}
+{"t":"op","op":{"op":"box","id":"ins-colhdr","x":12,"y":48,"w":336,"h":22,"fill":"#0b0e14","radius":6},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-col-a","x":20,"y":51,"w":80,"color":"#8a93a6","size":11,"weight":600,"align":"left","text":"Property"},"a":5}
+{"t":"op","op":{"op":"text","id":"gc-nodeA-t","x":90,"y":52,"w":100,"color":"#e6e9ef","size":11,"weight":500,"align":"left","text":"Attention Heads"},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-nodeB","x":50,"y":70,"w":105,"h":28,"fill":"#141821","stroke":"#2a3348","radius":8},"a":4}
+{"t":"op","op":{"op":"text","id":"gc-nodeB-t","x":60,"y":76,"w":90,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"Loss Curvature"},"a":4}
+{"t":"op","op":{"op":"text","id":"ins-col-b","x":140,"y":51,"w":200,"color":"#8a93a6","size":11,"weight":600,"align":"left","text":"Value  ↕"},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r1a","x":20,"y":76,"w":80,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Type"},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r1b","x":140,"y":76,"w":200,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"Concept"},"a":5}
+{"t":"op","op":{"op":"box","id":"gc-nodeC","x":535,"y":42,"w":120,"h":28,"fill":"#141821","stroke":"#3d2a5e","radius":8},"a":4}
+{"t":"op","op":{"op":"text","id":"gc-nodeC-t","x":545,"y":48,"w":105,"color":"#a079ff","size":11,"weight":500,"align":"left","text":"Cross-Validation"},"a":4}
+{"t":"op","op":{"op":"box","id":"ins-r2bg","x":14,"y":96,"w":332,"h":22,"fill":"#0b0e14","radius":4},"a":5}
+{"t":"op","op":{"op":"box","id":"gc-nodeD","x":580,"y":66,"w":110,"h":28,"fill":"#141821","stroke":"#3d2a5e","radius":8},"a":4}
+{"t":"op","op":{"op":"text","id":"gc-nodeD-t","x":590,"y":72,"w":95,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"Embedding Dim"},"a":4}
+{"t":"op","op":{"op":"text","id":"ins-r2a","x":20,"y":99,"w":80,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Confidence"},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r2b","x":140,"y":99,"w":200,"color":"#5b8cff","size":12,"weight":600,"align":"left","text":"0.94"},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r3a","x":20,"y":124,"w":80,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Sources"},"a":5}
+{"t":"op","op":{"op":"text","id":"gc-hint","x":20,"y":218,"w":220,"color":"#4a5268","size":11,"weight":400,"align":"left","text":"scroll to zoom · drag to pan"},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-dot1","x":60,"y":170,"w":3,"h":3,"fill":"#1e2a3a","radius":2},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-dot2","x":140,"y":190,"w":3,"h":3,"fill":"#1e2a3a","radius":2},"a":4}
+{"t":"op","op":{"op":"box","id":"gc-dot3","x":220,"y":160,"w":3,"h":3,"fill":"#1e2a3a","radius":2},"a":4}
+{"t":"agent","status":"working","a":13}
+{"t":"gov","active":10,"launched":14,"done":4,"failed":0,"retries":0,"tokIn":3989,"tokOut":14678,"cost":0.01240465,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":10}
+{"t":"op","op":{"op":"text","id":"ins-r3b","x":140,"y":124,"w":200,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"3"},"a":5}
+{"t":"op","op":{"op":"box","id":"ins-r4bg","x":14,"y":144,"w":332,"h":22,"fill":"#0b0e14","radius":4},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r4a","x":20,"y":147,"w":80,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Updated"},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r4b","x":140,"y":147,"w":200,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"2d ago"},"a":5}
+{"t":"op","op":{"op":"text","id":"ins-r5a","x":20,"y":172,"w":80,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Tags"},"a":5}
+{"t":"op","op":{"op":"box","id":"gc-dot4","x":500,"y":180,"w":3,"h":3,"fill":"#1e2a3a","radius":2},"a":4}
+{"t":"op","op":{"op":"text","id":"ins-r5b","x":140,"y":172,"w":200,"color":"#a079ff","size":12,"weight":500,"align":"left","text":"research · ml · predict"},"a":5}
+{"t":"op","op":{"op":"box","id":"ins-footbg","x":12,"y":204,"w":336,"h":30,"fill":"#0b0e14","radius":8},"a":5}
+{"t":"op","op":{"op":"button","id":"ins-foot","x":24,"y":209,"w":88,"h":20,"fill":"#1a1f2e","color":"#5b8cff","radius":6,"text":"14 links"},"a":5}
+{"t":"op","op":{"op":"box","id":"gc-dot5","x":620,"y":160,"w":3,"h":3,"fill":"#1e2a3a","radius":2},"a":4}
+{"t":"op","op":{"op":"done"},"a":4}
+{"t":"agent","a":4,"status":"done","ops":26,"usage":{"in":996,"out":3075,"cost":0.0026548500000000003},"error":null}
+{"t":"gov","active":9,"launched":14,"done":5,"failed":0,"retries":0,"tokIn":4985,"tokOut":17753,"cost":0.0150595,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":10}
+{"t":"op","op":{"op":"done"},"a":5}
+{"t":"agent","a":5,"status":"done","ops":21,"usage":{"in":1046,"out":2535,"cost":0.00226735},"error":null}
+{"t":"gov","active":8,"launched":14,"done":6,"failed":0,"retries":0,"tokIn":6031,"tokOut":20288,"cost":0.01732685,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":10}
+{"t":"agent","status":"working","a":14}
+{"t":"gov","active":9,"launched":15,"done":6,"failed":0,"retries":0,"tokIn":6031,"tokOut":20288,"cost":0.01732685,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":9}
+{"t":"agent","status":"working","a":15}
+{"t":"gov","active":10,"launched":16,"done":6,"failed":0,"retries":0,"tokIn":6031,"tokOut":20288,"cost":0.01732685,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":8}
+{"t":"op","op":{"op":"box","id":"a07-card","x":0,"y":0,"w":240,"h":200,"fill":"#141821","stroke":"#5b8cff","radius":12},"a":7}
+{"t":"op","op":{"op":"box","id":"a07-dot","x":16,"y":18,"w":8,"h":8,"fill":"#5b8cff","radius":4},"a":7}
+{"t":"op","op":{"op":"text","id":"a07-title","x":32,"y":16,"w":170,"color":"#e6e9ef","size":14,"weight":600,"align":"left","text":"Feature Prediction"},"a":7}
+{"t":"op","op":{"op":"text","id":"a07-pin","x":206,"y":14,"w":20,"color":"#8a93a6","size":13,"weight":400,"align":"right","text":"⊙"},"a":7}
+{"t":"op","op":{"op":"text","id":"a07-body","x":16,"y":44,"w":208,"color":"#8a93a6","size":11,"weight":400,"align":"left","text":"The cortex estimates future sensory states before they arrive, enabling predictive encoding."},"a":7}
+{"t":"op","op":{"op":"box","id":"cn-card","x":28,"y":16,"w":184,"h":168,"fill":"#141821","stroke":"#a079ff","radius":12},"a":8}
+{"t":"op","op":{"op":"box","id":"a07-div","x":16,"y":104,"w":208,"h":1,"fill":"#1e2535","radius":0},"a":7}
+{"t":"op","op":{"op":"box","id":"a07-chip1","x":16,"y":118,"w":44,"h":22,"fill":"#1a2236","radius":6},"a":7}
+{"t":"op","op":{"op":"text","id":"a07-chip1t","x":24,"y":123,"w":30,"color":"#5b8cff","size":10,"weight":600,"align":"left","text":"CORE"},"a":7}
+{"t":"op","op":{"op":"box","id":"a07-chip2","x":66,"y":118,"w":56,"h":22,"fill":"#1a2236","radius":6},"a":7}
+{"t":"op","op":{"op":"text","id":"a07-chip2t","x":74,"y":123,"w":42,"color":"#a079ff","size":10,"weight":600,"align":"left","text":"ACTIVE"},"a":7}
+{"t":"op","op":{"op":"text","id":"a07-links","x":16,"y":158,"w":80,"color":"#8a93a6","size":11,"weight":400,"align":"left","text":"14 links"},"a":7}
+{"t":"op","op":{"op":"done"},"a":7}
+{"t":"agent","a":7,"status":"done","ops":12,"usage":{"in":990,"out":2969,"cost":0.00257325},"error":null}
+{"t":"gov","active":9,"launched":16,"done":7,"failed":0,"retries":0,"tokIn":7021,"tokOut":23257,"cost":0.0199001,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":8}
+{"t":"agent","status":"working","a":16}
+{"t":"gov","active":10,"launched":17,"done":7,"failed":0,"retries":0,"tokIn":7021,"tokOut":23257,"cost":0.0199001,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":7}
+{"t":"op","op":{"op":"box","id":"cn-tile","x":84,"y":36,"w":72,"h":72,"fill":"#1c2235","stroke":"#a079ff","radius":12},"a":8}
+{"t":"op","op":{"op":"text","id":"cn-brain","x":84,"y":52,"w":72,"color":"#a079ff","size":28,"weight":400,"align":"center","text":"🧠"},"a":8}
+{"t":"op","op":{"op":"text","id":"cn-label","x":28,"y":118,"w":184,"color":"#e6e9ef","size":14,"weight":600,"align":"center","text":"Precision Weighting"},"a":8}
+{"t":"op","op":{"op":"text","id":"cn-type","x":28,"y":140,"w":184,"color":"#a079ff","size":10,"weight":600,"align":"center","text":"CONCEPT"},"a":8}
+{"t":"op","op":{"op":"box","id":"cn-badge","x":164,"y":22,"w":38,"h":22,"fill":"#1c2235","stroke":"#a079ff","radius":10},"a":8}
+{"t":"op","op":{"op":"text","id":"cn-badge-t","x":164,"y":26,"w":38,"color":"#a079ff","size":10,"weight":600,"align":"center","text":"deg 7"},"a":8}
+{"t":"op","op":{"op":"done"},"a":8}
+{"t":"agent","a":8,"status":"done","ops":8,"usage":{"in":993,"out":1738,"cost":0.0016510499999999998},"error":null}
+{"t":"gov","active":9,"launched":17,"done":8,"failed":0,"retries":0,"tokIn":8014,"tokOut":24995,"cost":0.02155115,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":7}
+{"t":"agent","status":"working","a":17}
+{"t":"gov","active":10,"launched":18,"done":8,"failed":0,"retries":0,"tokIn":8014,"tokOut":24995,"cost":0.02155115,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":6}
+{"t":"op","op":{"op":"box","id":"n-card","x":16,"y":72,"w":208,"h":56,"fill":"#141821","stroke":"#2a3348","radius":12},"a":9}
+{"t":"op","op":{"op":"box","id":"n-hover","x":14,"y":70,"w":212,"h":60,"stroke":"#a079ff","radius":14},"a":9}
+{"t":"op","op":{"op":"box","id":"n-accent","x":16,"y":82,"w":3,"h":36,"fill":"#a079ff","radius":2},"a":9}
+{"t":"op","op":{"op":"box","id":"n-pdfflag","x":34,"y":94,"w":8,"h":8,"fill":"#ff4757","radius":4},"a":9}
+{"t":"op","op":{"op":"text","id":"t-pdf","x":48,"y":82,"w":36,"color":"#ff4757","size":9,"weight":700,"align":"left","text":"PDF"},"a":9}
+{"t":"op","op":{"op":"text","id":"t-title","x":48,"y":96,"w":164,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"Barak & Costa 2016 · PNAS"},"a":9}
+{"t":"op","op":{"op":"box","id":"p-top","x":114,"y":62,"w":12,"h":12,"fill":"#1e2533","stroke":"#5b8cff","radius":6},"a":9}
+{"t":"op","op":{"op":"box","id":"p-bot","x":114,"y":128,"w":12,"h":12,"fill":"#1e2533","stroke":"#5b8cff","radius":6},"a":9}
+{"t":"op","op":{"op":"box","id":"t-bg","x":44,"y":142,"w":108,"h":22,"fill":"#1a1f2b","stroke":"#2a3348","radius":6},"a":9}
+{"t":"op","op":{"op":"text","id":"t-cite","x":52,"y":146,"w":96,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"347 citations"},"a":9}
+{"t":"op","op":{"op":"done"},"a":9}
+{"t":"agent","a":9,"status":"done","ops":11,"usage":{"in":986,"out":3321,"cost":0.00283585},"error":null}
+{"t":"gov","active":9,"launched":18,"done":9,"failed":0,"retries":0,"tokIn":9000,"tokOut":28316,"cost":0.024387000000000002,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":6}
+{"t":"agent","status":"working","a":18}
+{"t":"gov","active":10,"launched":19,"done":9,"failed":0,"retries":0,"tokIn":9000,"tokOut":28316,"cost":0.024387000000000002,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":5}
+{"t":"op","op":{"op":"box","id":"fg","x":0,"y":0,"w":360,"h":200,"fill":"#141821","stroke":"#1e2433"},"a":6}
+{"t":"op","op":{"op":"text","id":"fh","x":18,"y":16,"w":80,"color":"#e6e9ef","size":12,"weight":600,"align":"left","text":"Filters"},"a":6}
+{"t":"op","op":{"op":"box","id":"fb","x":228,"y":13,"w":74,"h":22,"fill":"#101f38","stroke":"#21406e","radius":11},"a":6}
+{"t":"op","op":{"op":"text","id":"fc","x":240,"y":18,"w":52,"color":"#5b8cff","size":11,"weight":500,"align":"left","text":"12 results"},"a":6}
+{"t":"op","op":{"op":"text","id":"fr","x":312,"y":18,"w":40,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"Reset"},"a":6}
+{"t":"op","op":{"op":"box","id":"fl","x":20,"y":52,"w":2,"h":118,"fill":"#232a38","radius":1},"a":6}
+{"t":"op","op":{"op":"box","id":"c1","x":32,"y":48,"w":312,"h":28,"fill":"#1b2230","stroke":"#242b39","radius":8},"a":6}
+{"t":"op","op":{"op":"text","id":"k1","x":44,"y":56,"w":110,"color":"#8a93a6","size":12,"weight":500,"align":"left","text":"node_type"},"a":6}
+{"t":"op","op":{"op":"text","id":"v1","x":150,"y":56,"w":120,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"= concept"},"a":6}
+{"t":"op","op":{"op":"box","id":"c2","x":32,"y":80,"w":312,"h":28,"fill":"#1b2230","stroke":"#242b39","radius":8},"a":6}
+{"t":"op","op":{"op":"text","id":"k2","x":44,"y":88,"w":110,"color":"#8a93a6","size":12,"weight":500,"align":"left","text":"source_doi"},"a":6}
+{"t":"op","op":{"op":"text","id":"v2","x":150,"y":88,"w":120,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"is filled"},"a":6}
+{"t":"op","op":{"op":"text","id":"a1","x":320,"y":76,"w":30,"color":"#8a93a6","size":9,"weight":600,"align":"right","text":"AND"},"a":6}
+{"t":"op","op":{"op":"box","id":"c3","x":32,"y":114,"w":312,"h":28,"fill":"#1b2230","stroke":"#242b39","radius":8},"a":6}
+{"t":"op","op":{"op":"text","id":"k3","x":44,"y":122,"w":120,"color":"#8a93a6","size":12,"weight":500,"align":"left","text":"last_updated"},"a":6}
+{"t":"op","op":{"op":"text","id":"a2","x":320,"y":110,"w":30,"color":"#8a93a6","size":9,"weight":600,"align":"right","text":"AND"},"a":6}
+{"t":"op","op":{"op":"box","id":"c4","x":32,"y":148,"w":312,"h":28,"fill":"#1b2230","stroke":"#242b39","radius":8},"a":6}
+{"t":"op","op":{"op":"text","id":"k4","x":44,"y":156,"w":110,"color":"#8a93a6","size":12,"weight":500,"align":"left","text":"cited_by"},"a":6}
+{"t":"op","op":{"op":"text","id":"v4","x":150,"y":156,"w":120,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"≥ 5"},"a":6}
+{"t":"op","op":{"op":"text","id":"a3","x":320,"y":144,"w":30,"color":"#8a93a6","size":9,"weight":600,"align":"right","text":"AND"},"a":6}
+{"t":"op","op":{"op":"done"},"a":6}
+{"t":"agent","a":6,"status":"done","ops":21,"usage":{"in":1003,"out":3990,"cost":0.00334355},"error":null}
+{"t":"gov","active":9,"launched":19,"done":10,"failed":0,"retries":0,"tokIn":10003,"tokOut":32306,"cost":0.027730550000000003,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":5}
+{"t":"agent","status":"working","a":19}
+{"t":"gov","active":10,"launched":20,"done":10,"failed":0,"retries":0,"tokIn":10003,"tokOut":32306,"cost":0.027730550000000003,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":4}
+{"t":"op","op":{"op":"box","id":"bg18","x":0,"y":0,"w":360,"h":200,"fill":"#141821","radius":0},"a":10}
+{"t":"op","op":{"op":"box","id":"code18","x":12,"y":44,"w":336,"h":152,"fill":"#0e1219","stroke":"#1c2230","radius":8},"a":10}
+{"t":"op","op":{"op":"box","id":"div18","x":0,"y":42,"w":360,"h":1,"fill":"#1c2230"},"a":10}
+{"t":"op","op":{"op":"text","id":"edit18","x":16,"y":13,"w":32,"color":"#5b6479","size":11,"weight":700,"align":"left","text":"Edit"},"a":10}
+{"t":"op","op":{"op":"text","id":"filen18","x":50,"y":12,"w":130,"color":"#c3cad8","size":12,"weight":500,"align":"left","text":"feature-prediction.md"},"a":10}
+{"t":"op","op":{"op":"box","id":"savbg18","x":176,"y":10,"w":62,"h":21,"fill":"#12211a","stroke":"#234634","radius":11},"a":10}
+{"t":"op","op":{"op":"text","id":"saven18","x":184,"y":14,"w":48,"color":"#5fd68f","size":11,"weight":600,"align":"left","text":"Saved ✓"},"a":10}
+{"t":"op","op":{"op":"button","id":"prev18","x":250,"y":9,"w":94,"h":23,"fill":"#1c2230","color":"#8a93a6","radius":8,"text":"☰ Preview"},"a":10}
+{"t":"op","op":{"op":"box","id":"act18","x":20,"y":98,"w":320,"h":26,"fill":"#182031","radius":6},"a":10}
+{"t":"op","op":{"op":"text","id":"ln1","x":22,"y":56,"w":16,"color":"#4b5263","size":11,"weight":400,"align":"right","text":"1"},"a":10}
+{"t":"op","op":{"op":"text","id":"ln2","x":22,"y":80,"w":16,"color":"#4b5263","size":11,"weight":400,"align":"right","text":"2"},"a":10}
+{"t":"op","op":{"op":"text","id":"ln3","x":22,"y":104,"w":16,"color":"#7d8698","size":11,"weight":400,"align":"right","text":"3"},"a":10}
+{"t":"op","op":{"op":"text","id":"ln4","x":22,"y":128,"w":16,"color":"#4b5263","size":11,"weight":400,"align":"right","text":"4"},"a":10}
+{"t":"op","op":{"op":"text","id":"ln5","x":22,"y":152,"w":16,"color":"#4b5263","size":11,"weight":400,"align":"right","text":"5"},"a":10}
+{"t":"op","op":{"op":"text","id":"m1h","x":44,"y":56,"w":12,"color":"#a079ff","size":12,"weight":700,"align":"left","text":"#"},"a":10}
+{"t":"op","op":{"op":"text","id":"m1t","x":56,"y":56,"w":220,"color":"#e6e9ef","size":12,"weight":700,"align":"left","text":"Feature Prediction — the cortex"},"a":10}
+{"t":"op","op":{"op":"text","id":"m2t","x":44,"y":80,"w":230,"color":"#cdd3df","size":12,"weight":600,"align":"left","text":"encodes an expected stimulus 16 ms"},"a":10}
+{"t":"op","op":{"op":"text","id":"m3t","x":44,"y":104,"w":120,"color":"#9aa3b5","size":12,"weight":500,"align":"left","text":"before it arrives."},"a":10}
+{"t":"op","op":{"op":"box","id":"caret18","x":150,"y":103,"w":2,"h":17,"fill":"#5b8cff"},"a":10}
+{"t":"op","op":{"op":"text","id":"m5h","x":44,"y":152,"w":16,"color":"#a079ff","size":12,"weight":700,"align":"left","text":"##"},"a":10}
+{"t":"op","op":{"op":"text","id":"m5t","x":62,"y":152,"w":120,"color":"#e6e9ef","size":12,"weight":700,"align":"left","text":"Latent space"},"a":10}
+{"t":"op","op":{"op":"done"},"a":10}
+{"t":"agent","a":10,"status":"done","ops":22,"usage":{"in":1012,"out":3587,"cost":0.0030444499999999998},"error":null}
+{"t":"gov","active":9,"launched":20,"done":11,"failed":0,"retries":0,"tokIn":11015,"tokOut":35893,"cost":0.030775000000000004,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":4}
+{"t":"agent","status":"working","a":20}
+{"t":"gov","active":10,"launched":21,"done":11,"failed":0,"retries":0,"tokIn":11015,"tokOut":35893,"cost":0.030775000000000004,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":3}
+{"t":"op","op":{"op":"box","id":"cl1","x":0,"y":0,"w":240,"h":190,"fill":"#0b0e14","stroke":"#5b8cff","radius":12},"a":11}
+{"t":"op","op":{"op":"box","id":"cl2","x":90,"y":24,"w":60,"h":60,"fill":"#141821","radius":12},"a":11}
+{"t":"op","op":{"op":"box","id":"cl3","x":108,"y":46,"w":28,"h":18,"fill":"#2a3040","radius":4},"a":11}
+{"t":"op","op":{"op":"box","id":"cl4","x":105,"y":41,"w":28,"h":18,"fill":"#3d3060","radius":4},"a":11}
+{"t":"op","op":{"op":"box","id":"cl5","x":102,"y":36,"w":28,"h":18,"fill":"#243458","radius":4},"a":11}
+{"t":"op","op":{"op":"text","id":"cl6","x":16,"y":96,"w":208,"color":"#e6e9ef","size":14,"weight":600,"align":"center","text":"Active Inference (9)"},"a":11}
+{"t":"op","op":{"op":"text","id":"cl7","x":16,"y":114,"w":208,"color":"#8a93a6","size":11,"weight":400,"align":"center","text":"9 nodes · inference loop"},"a":11}
+{"t":"op","op":{"op":"button","id":"cl8","x":78,"y":138,"w":84,"h":32,"fill":"#141821","color":"#5b8cff","radius":8,"text":"⊕ Expand"},"a":11}
+{"t":"op","op":{"op":"done"},"a":11}
+{"t":"agent","a":11,"status":"done","ops":9,"usage":{"in":993,"out":2976,"cost":0.00257955},"error":null}
+{"t":"gov","active":9,"launched":21,"done":12,"failed":0,"retries":0,"tokIn":12008,"tokOut":38869,"cost":0.033354550000000004,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":3}
+{"t":"agent","status":"working","a":21}
+{"t":"gov","active":10,"launched":22,"done":12,"failed":0,"retries":0,"tokIn":12008,"tokOut":38869,"cost":0.033354550000000004,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":2}
+{"t":"op","op":{"op":"box","id":"a11-bg","x":0,"y":0,"w":240,"h":190,"fill":"#141821","stroke":"#f59e0b","radius":12},"a":12}
+{"t":"op","op":{"op":"box","id":"a11-tile","x":16,"y":16,"w":44,"h":44,"fill":"#1e2433","radius":10},"a":12}
+{"t":"op","op":{"op":"text","id":"a11-icon","x":16,"y":26,"w":44,"color":"#f59e0b","size":20,"weight":600,"align":"center","text":"⬡"},"a":12}
+{"t":"op","op":{"op":"box","id":"a11-dot","x":70,"y":26,"w":8,"h":8,"fill":"#f59e0b","radius":4},"a":12}
+{"t":"op","op":{"op":"text","id":"a11-title","x":16,"y":74,"w":208,"color":"#e6e9ef","size":13,"weight":600,"align":"left","text":"Cortex-Agent · Summarizing"},"a":12}
+{"t":"op","op":{"op":"text","id":"a11-sub","x":16,"y":98,"w":208,"color":"#8a93a6","size":11,"weight":400,"align":"left","text":"ingesting 3/12 papers"},"a":12}
+{"t":"op","op":{"op":"box","id":"a11-pb-bg","x":16,"y":122,"w":208,"h":4,"fill":"#1e2433","radius":2},"a":12}
+{"t":"op","op":{"op":"box","id":"a11-pb-fill","x":16,"y":122,"w":52,"h":4,"fill":"#f59e0b","radius":2},"a":12}
+{"t":"op","op":{"op":"text","id":"a11-badge","x":16,"y":150,"w":72,"color":"#f59e0b","size":10,"weight":700,"align":"left","text":"WORKING"},"a":12}
+{"t":"op","op":{"op":"text","id":"a11-pct","x":168,"y":150,"w":56,"color":"#8a93a6","size":10,"weight":500,"align":"right","text":"25%"},"a":12}
+{"t":"op","op":{"op":"done"},"a":12}
+{"t":"agent","a":12,"status":"done","ops":11,"usage":{"in":1001,"out":2319,"cost":0.0020896},"error":null}
+{"t":"gov","active":9,"launched":22,"done":13,"failed":0,"retries":0,"tokIn":13009,"tokOut":41188,"cost":0.03544415,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":2}
+{"t":"agent","status":"working","a":22}
+{"t":"gov","active":10,"launched":23,"done":13,"failed":0,"retries":0,"tokIn":13009,"tokOut":41188,"cost":0.03544415,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":1}
+{"t":"op","op":{"op":"box","id":"es-frame","x":0,"y":0,"w":240,"h":190,"fill":"#141821","stroke":"#2a3040","radius":12},"a":13}
+{"t":"op","op":{"op":"text","id":"es-title","x":16,"y":14,"w":120,"color":"#8a93a6","size":11,"weight":600,"align":"left","text":"EDGE TYPES"},"a":13}
+{"t":"op","op":{"op":"box","id":"es-divider","x":16,"y":34,"w":208,"h":1,"fill":"#2a3040"},"a":13}
+{"t":"op","op":{"op":"box","id":"es-line1","x":16,"y":50,"w":24,"h":3,"fill":"#5b8cff","radius":2},"a":13}
+{"t":"op","op":{"op":"text","id":"es-lbl1","x":48,"y":44,"w":100,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"derived-from"},"a":13}
+{"t":"op","op":{"op":"box","id":"es-tog1","x":188,"y":44,"w":36,"h":16,"fill":"#5b8cff","radius":8},"a":13}
+{"t":"op","op":{"op":"box","id":"es-knob1","x":206,"y":46,"w":12,"h":12,"fill":"#ffffff","radius":6},"a":13}
+{"t":"op","op":{"op":"box","id":"es-line2","x":16,"y":80,"w":24,"h":3,"fill":"#a079ff","radius":2},"a":13}
+{"t":"op","op":{"op":"text","id":"es-lbl2","x":48,"y":74,"w":100,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"contradicts"},"a":13}
+{"t":"op","op":{"op":"box","id":"es-tog2","x":188,"y":74,"w":36,"h":16,"fill":"#a079ff","radius":8},"a":13}
+{"t":"op","op":{"op":"box","id":"es-knob2","x":206,"y":76,"w":12,"h":12,"fill":"#ffffff","radius":6},"a":13}
+{"t":"op","op":{"op":"box","id":"es-line3","x":16,"y":110,"w":24,"h":3,"fill":"#8a93a6","radius":2},"a":13}
+{"t":"op","op":{"op":"text","id":"es-lbl3","x":48,"y":104,"w":100,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"co-cited"},"a":13}
+{"t":"op","op":{"op":"box","id":"es-tog3","x":188,"y":104,"w":36,"h":16,"fill":"#2a3040","radius":8},"a":13}
+{"t":"op","op":{"op":"box","id":"es-knob3","x":190,"y":106,"w":12,"h":12,"fill":"#8a93a6","radius":6},"a":13}
+{"t":"op","op":{"op":"text","id":"es-note","x":16,"y":140,"w":120,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"2 of 3 styles visible"},"a":13}
+{"t":"op","op":{"op":"done"},"a":13}
+{"t":"agent","a":13,"status":"done","ops":17,"usage":{"in":981,"out":2752,"cost":0.00240735},"error":null}
+{"t":"gov","active":9,"launched":23,"done":14,"failed":0,"retries":0,"tokIn":13990,"tokOut":43940,"cost":0.0378515,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":1}
+{"t":"agent","status":"working","a":23}
+{"t":"gov","active":10,"launched":24,"done":14,"failed":0,"retries":0,"tokIn":13990,"tokOut":43940,"cost":0.0378515,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"f_frame","x":10,"y":10,"w":220,"h":170,"fill":"#141821","stroke":"#232a38","radius":12},"a":14}
+{"t":"op","op":{"op":"image","id":"i_mini","x":24,"y":26,"w":96,"h":96,"radius":8,"label":"Micro node-cluster thumbnail: several accent and purple dots linked in a small c"},"a":14}
+{"t":"op","op":{"op":"box","id":"d1","x":42,"y":44,"w":10,"h":10,"fill":"#5b8cff","radius":5},"a":14}
+{"t":"op","op":{"op":"box","id":"d2","x":82,"y":60,"w":8,"h":8,"fill":"#a079ff","radius":4},"a":14}
+{"t":"op","op":{"op":"box","id":"d3","x":58,"y":88,"w":9,"h":9,"fill":"#5b8cff","radius":4},"a":14}
+{"t":"op","op":{"op":"text","id":"t_cap","x":24,"y":128,"w":96,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"Graph overview"},"a":14}
+{"t":"op","op":{"op":"button","id":"b_zin","x":150,"y":26,"w":60,"h":34,"fill":"#1b2130","color":"#e6e9ef","radius":8,"text":"+"},"a":14}
+{"t":"op","op":{"op":"button","id":"b_zout","x":150,"y":64,"w":60,"h":34,"fill":"#1b2130","color":"#e6e9ef","radius":8,"text":"−"},"a":14}
+{"t":"op","op":{"op":"button","id":"b_fit","x":150,"y":102,"w":60,"h":34,"fill":"#1b2130","color":"#e6e9ef","radius":8,"text":"⤢"},"a":14}
+{"t":"op","op":{"op":"button","id":"b_reset","x":150,"y":148,"w":60,"h":26,"fill":"#1b2130","color":"#8a93a6","radius":8,"text":"Reset"},"a":14}
+{"t":"op","op":{"op":"done"},"a":14}
+{"t":"agent","a":14,"status":"done","ops":11,"usage":{"in":984,"out":2334,"cost":0.0020949000000000002},"error":null}
+{"t":"gov","active":9,"launched":24,"done":15,"failed":0,"retries":0,"tokIn":14974,"tokOut":46274,"cost":0.03994640000000001,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"ctx-frame","x":16,"y":16,"w":208,"h":158,"fill":"#1c2130","stroke":"#2d3548","radius":12},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-title","x":32,"y":24,"w":160,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"Feature Prediction"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-open","x":36,"y":44,"w":120,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Open"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-kb-open","x":168,"y":44,"w":44,"color":"#8a93a6","size":11,"weight":400,"align":"right","text":"⌘O"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-link","x":36,"y":64,"w":140,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Add link to…"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-kb-link","x":168,"y":64,"w":44,"color":"#8a93a6","size":11,"weight":400,"align":"right","text":"⌘L"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-hub","x":36,"y":84,"w":140,"color":"#e6e9ef","size":13,"weight":400,"align":"left","text":"Set as hub"},"a":16}
+{"t":"op","op":{"op":"box","id":"ctx-hl","x":28,"y":100,"w":192,"h":22,"fill":"#262d3f","radius":6},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-pin","x":36,"y":103,"w":140,"color":"#5b8cff","size":13,"weight":500,"align":"left","text":"Pin position"},"a":16}
+{"t":"op","op":{"op":"box","id":"ctx-div","x":32,"y":126,"w":176,"h":1,"fill":"#2d3548","radius":0},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-archive","x":36,"y":135,"w":140,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Archive"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-delete","x":36,"y":155,"w":140,"color":"#ff5c5c","size":13,"weight":500,"align":"left","text":"Delete"},"a":16}
+{"t":"op","op":{"op":"text","id":"ctx-kb-del","x":168,"y":155,"w":44,"color":"#8a93a6","size":11,"weight":400,"align":"right","text":"⌘⌫"},"a":16}
+{"t":"op","op":{"op":"done"},"a":16}
+{"t":"agent","a":16,"status":"done","ops":14,"usage":{"in":980,"out":3314,"cost":0.0028285},"error":null}
+{"t":"gov","active":8,"launched":24,"done":16,"failed":0,"retries":0,"tokIn":15954,"tokOut":49588,"cost":0.042774900000000005,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"a14-bg","x":0,"y":0,"w":240,"h":190,"fill":"#141821","radius":12},"a":15}
+{"t":"op","op":{"op":"box","id":"a14-active-hl","x":16,"y":42,"w":208,"h":30,"fill":"#1a2a4a","radius":8},"a":15}
+{"t":"op","op":{"op":"text","id":"a14-title","x":20,"y":16,"w":100,"color":"#8a93a6","size":11,"weight":600,"align":"left","text":"Layout"},"a":15}
+{"t":"op","op":{"op":"box","id":"a14-line","x":33,"y":62,"w":2,"h":84,"fill":"#2a3144","radius":1},"a":15}
+{"t":"op","op":{"op":"box","id":"a14-s1-circle","x":24,"y":44,"w":20,"h":20,"fill":"#5b8cff","radius":10},"a":15}
+{"t":"op","op":{"op":"box","id":"a14-s2-circle","x":24,"y":78,"w":20,"h":20,"fill":"#1e2433","stroke":"#2a3144","radius":10},"a":15}
+{"t":"op","op":{"op":"box","id":"a14-s3-circle","x":24,"y":112,"w":20,"h":20,"fill":"#1e2433","stroke":"#2a3144","radius":10},"a":15}
+{"t":"op","op":{"op":"box","id":"a14-s4-circle","x":24,"y":146,"w":20,"h":20,"fill":"#1e2433","stroke":"#2a3144","radius":10},"a":15}
+{"t":"op","op":{"op":"text","id":"a14-s1-text","x":52,"y":48,"w":160,"color":"#e6e9ef","size":13,"weight":600,"align":"left","text":"Force-Directed"},"a":15}
+{"t":"op","op":{"op":"text","id":"a14-s2-text","x":52,"y":82,"w":160,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Layered"},"a":15}
+{"t":"op","op":{"op":"box","id":"hp-card","x":0,"y":0,"w":360,"h":190,"fill":"#141821","stroke":"#2a3348","radius":12},"a":17}
+{"t":"op","op":{"op":"box","id":"hp-accent","x":0,"y":16,"w":3,"h":158,"fill":"#5b8cff","radius":2},"a":17}
+{"t":"op","op":{"op":"text","id":"hp-title","x":24,"y":18,"w":210,"color":"#e6e9ef","size":15,"weight":600,"align":"left","text":"Free Energy Principle (FEP)"},"a":17}
+{"t":"op","op":{"op":"box","id":"hp-badge-bg","x":240,"y":18,"w":100,"h":20,"fill":"#1a2235","stroke":"#2a3348","radius":6},"a":17}
+{"t":"op","op":{"op":"text","id":"a14-s3-text","x":52,"y":116,"w":160,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Clustered"},"a":15}
+{"t":"op","op":{"op":"text","id":"a14-s4-text","x":52,"y":150,"w":160,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Radial"},"a":15}
+{"t":"op","op":{"op":"done"},"a":15}
+{"t":"agent","a":15,"status":"done","ops":13,"usage":{"in":992,"out":3361,"cost":0.00286795},"error":null}
+{"t":"gov","active":7,"launched":24,"done":17,"failed":0,"retries":0,"tokIn":16946,"tokOut":52949,"cost":0.045642850000000006,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"text","id":"hp-badge","x":250,"y":22,"w":80,"color":"#a079ff","size":10,"weight":500,"align":"left","text":"active inference"},"a":17}
+{"t":"op","op":{"op":"text","id":"hp-desc","x":24,"y":48,"w":316,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Variational framework bounding posterior uncertainty — Friston 2010"},"a":17}
+{"t":"op","op":{"op":"box","id":"hp-divider","x":24,"y":76,"w":312,"h":1,"fill":"#1e2535","radius":0},"a":17}
+{"t":"op","op":{"op":"text","id":"hp-meta","x":24,"y":88,"w":280,"color":"#8a93a6","size":11,"weight":400,"align":"left","text":"12 linked notes · 4 sources · updated 2h ago"},"a":17}
+{"t":"op","op":{"op":"text","id":"hp-tabs","x":24,"y":152,"w":140,"color":"#5b8cff","size":11,"weight":500,"align":"left","text":"↳ 3 open tabs"},"a":17}
+{"t":"op","op":{"op":"button","id":"hp-open","x":256,"y":144,"w":88,"h":34,"fill":"#5b8cff","color":"#ffffff","radius":8,"text":"Open ↵"},"a":17}
+{"t":"op","op":{"op":"done"},"a":17}
+{"t":"agent","a":17,"status":"done","ops":11,"usage":{"in":990,"out":3014,"cost":0.002607},"error":null}
+{"t":"gov","active":6,"launched":24,"done":18,"failed":0,"retries":0,"tokIn":17936,"tokOut":55963,"cost":0.048249850000000004,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"a19bg","x":0,"y":0,"w":360,"h":190,"fill":"#141821","stroke":"#1e2433","radius":12},"a":18}
+{"t":"op","op":{"op":"text","id":"a19title","x":20,"y":16,"w":200,"color":"#8a93a6","size":13,"weight":600,"align":"left","text":"Recent"},"a":18}
+{"t":"op","op":{"op":"box","id":"a19dot1","x":20,"y":48,"w":8,"h":8,"fill":"#5b8cff","radius":4},"a":18}
+{"t":"op","op":{"op":"box","id":"a19line1","x":23,"y":56,"w":2,"h":26,"fill":"#2a3040","radius":1},"a":18}
+{"t":"op","op":{"op":"box","id":"pr-bg","x":0,"y":0,"w":360,"h":190,"fill":"#141821","stroke":"#1e2433","radius":12},"a":19}
+{"t":"op","op":{"op":"text","id":"pr-title","x":16,"y":12,"w":200,"color":"#8a93a6","size":12,"weight":600,"align":"left","text":"Suggested Links (2)"},"a":19}
+{"t":"op","op":{"op":"text","id":"a19ts1","x":36,"y":42,"w":60,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"2h ago"},"a":18}
+{"t":"op","op":{"op":"box","id":"pr-card1","x":12,"y":32,"w":336,"h":70,"fill":"#0b0e14","stroke":"#1a2030","radius":8},"a":19}
+{"t":"op","op":{"op":"text","id":"a19ev1","x":36,"y":57,"w":304,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"Agent linked Feature Prediction → Precision Weighting"},"a":18}
+{"t":"op","op":{"op":"box","id":"a19dot2","x":20,"y":88,"w":8,"h":8,"fill":"#a079ff","radius":4},"a":18}
+{"t":"op","op":{"op":"text","id":"pr1-src","x":24,"y":40,"w":160,"color":"#e6e9ef","size":12,"weight":600,"align":"left","text":"Feature Prediction"},"a":19}
+{"t":"op","op":{"op":"box","id":"a19line2","x":23,"y":96,"w":2,"h":26,"fill":"#2a3040","radius":1},"a":18}
+{"t":"op","op":{"op":"text","id":"a19ts2","x":36,"y":82,"w":60,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"1d ago"},"a":18}
+{"t":"op","op":{"op":"text","id":"a19ev2","x":36,"y":97,"w":304,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"Barak & Costa 2016 ingested (24 sources)"},"a":18}
+{"t":"op","op":{"op":"box","id":"a19dot3","x":20,"y":128,"w":8,"h":8,"fill":"#4ecdc4","radius":4},"a":18}
+{"t":"op","op":{"op":"text","id":"a19ts3","x":36,"y":122,"w":60,"color":"#8a93a6","size":11,"weight":500,"align":"left","text":"3d ago"},"a":18}
+{"t":"op","op":{"op":"text","id":"a19ev3","x":36,"y":137,"w":304,"color":"#e6e9ef","size":12,"weight":400,"align":"left","text":"Cluster Active Inference collapsed"},"a":18}
+{"t":"op","op":{"op":"done"},"a":18}
+{"t":"agent","a":18,"status":"done","ops":14,"usage":{"in":1000,"out":4130,"cost":0.0034475},"error":null}
+{"t":"gov","active":5,"launched":24,"done":19,"failed":0,"retries":0,"tokIn":18936,"tokOut":60093,"cost":0.05169735,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"text","id":"pr1-conf","x":296,"y":40,"w":44,"color":"#5b8cff","size":11,"weight":700,"align":"right","text":"87%"},"a":19}
+{"t":"op","op":{"op":"text","id":"pr1-relation","x":24,"y":57,"w":280,"color":"#a079ff","size":11,"weight":400,"align":"left","text":"—derived-from→ Active Inference"},"a":19}
+{"t":"op","op":{"op":"button","id":"pr1-accept","x":24,"y":76,"w":58,"h":20,"fill":"#1a2a42","color":"#5b8cff","radius":6,"text":"Accept"},"a":19}
+{"t":"op","op":{"op":"button","id":"pr1-reject","x":88,"y":76,"w":58,"h":20,"fill":"#1a1f2b","color":"#8a93a6","radius":6,"text":"Reject"},"a":19}
+{"t":"op","op":{"op":"box","id":"pr-card2","x":12,"y":108,"w":336,"h":70,"fill":"#0b0e14","stroke":"#1a2030","radius":8},"a":19}
+{"t":"op","op":{"op":"text","id":"pr2-src","x":24,"y":116,"w":120,"color":"#e6e9ef","size":12,"weight":600,"align":"left","text":"Gain"},"a":19}
+{"t":"op","op":{"op":"text","id":"pr2-conf","x":296,"y":116,"w":44,"color":"#5b8cff","size":11,"weight":700,"align":"right","text":"79%"},"a":19}
+{"t":"op","op":{"op":"text","id":"pr2-relation","x":24,"y":133,"w":260,"color":"#ff6b6b","size":11,"weight":400,"align":"left","text":"—contradicts→ Fixed-Weighting"},"a":19}
+{"t":"op","op":{"op":"button","id":"pr2-accept","x":24,"y":152,"w":58,"h":20,"fill":"#1a2a42","color":"#5b8cff","radius":6,"text":"Accept"},"a":19}
+{"t":"op","op":{"op":"button","id":"pr2-reject","x":88,"y":152,"w":58,"h":20,"fill":"#1a1f2b","color":"#8a93a6","radius":6,"text":"Reject"},"a":19}
+{"t":"op","op":{"op":"done"},"a":19}
+{"t":"agent","a":19,"status":"done","ops":15,"usage":{"in":991,"out":3864,"cost":0.00324485},"error":null}
+{"t":"gov","active":4,"launched":24,"done":20,"failed":0,"retries":0,"tokIn":19927,"tokOut":63957,"cost":0.054942200000000004,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"sb-bg","x":0,"y":0,"w":1440,"h":80,"fill":"#141821","radius":0},"a":23}
+{"t":"op","op":{"op":"box","id":"sb-border","x":0,"y":0,"w":1440,"h":1,"fill":"#1e2433","radius":0},"a":23}
+{"t":"op","op":{"op":"box","id":"badge-connected","x":16,"y":24,"w":130,"h":32,"fill":"#0d1f12","stroke":"#1e4a2a","radius":8},"a":23}
+{"t":"op","op":{"op":"box","id":"green-dot","x":28,"y":34,"w":8,"h":8,"fill":"#4ade80","radius":4},"a":23}
+{"t":"op","op":{"op":"text","id":"t-connected","x":42,"y":30,"w":95,"color":"#e6e9ef","size":12,"weight":500,"align":"left","text":"Connected"},"a":23}
+{"t":"op","op":{"op":"box","id":"badge-nodes","x":158,"y":24,"w":112,"h":32,"fill":"#0b0e14","stroke":"#252d3e","radius":8},"a":23}
+{"t":"op","op":{"op":"text","id":"t-nodes","x":170,"y":30,"w":90,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"1,284 nodes"},"a":23}
+{"t":"op","op":{"op":"box","id":"badge-edges","x":282,"y":24,"w":108,"h":32,"fill":"#0b0e14","stroke":"#252d3e","radius":8},"a":23}
+{"t":"op","op":{"op":"text","id":"t-edges","x":294,"y":30,"w":85,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"3,012 edges"},"a":23}
+{"t":"op","op":{"op":"box","id":"badge-layout","x":402,"y":24,"w":192,"h":32,"fill":"#0b0e14","stroke":"#252d3e","radius":8},"a":23}
+{"t":"op","op":{"op":"text","id":"t-layout","x":414,"y":30,"w":170,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Layout: Force-Directed"},"a":23}
+{"t":"op","op":{"op":"text","id":"t-zoom","x":1198,"y":30,"w":80,"color":"#e6e9ef","size":12,"weight":500,"align":"right","text":"100% zoom"},"a":23}
+{"t":"op","op":{"op":"box","id":"spinner","x":1300,"y":33,"w":10,"h":10,"stroke":"#5b8cff","radius":5},"a":23}
+{"t":"op","op":{"op":"box","id":"spinner-inner","x":1303,"y":36,"w":4,"h":4,"fill":"#5b8cff","radius":2},"a":23}
+{"t":"op","op":{"op":"text","id":"t-sync","x":1318,"y":30,"w":110,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"Auto-syncing…"},"a":23}
+{"t":"op","op":{"op":"done"},"a":23}
+{"t":"agent","a":23,"status":"done","ops":16,"usage":{"in":1002,"out":2400,"cost":0.0021506999999999997},"error":null}
+{"t":"gov","active":3,"launched":24,"done":21,"failed":0,"retries":0,"tokIn":20929,"tokOut":66357,"cost":0.0570929,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"a22-bg","x":0,"y":0,"w":1440,"h":110,"fill":"#141821","stroke":"#1e2433","radius":0},"a":21}
+{"t":"op","op":{"op":"box","id":"a22-play","x":24,"y":28,"w":54,"h":54,"fill":"#5b8cff","radius":27},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-play-ic","x":24,"y":28,"w":54,"color":"#e6e9ef","size":18,"weight":600,"align":"center","text":"▶"},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-play-lbl","x":88,"y":44,"w":140,"color":"#8a93a6","size":13,"weight":400,"align":"left","text":"Annotate by time"},"a":21}
+{"t":"op","op":{"op":"box","id":"a22-track","x":240,"y":42,"w":880,"h":26,"fill":"#0b0e14","radius":13},"a":21}
+{"t":"op","op":{"op":"box","id":"a22-range","x":876,"y":42,"w":97,"h":26,"fill":"#5b8cff","radius":13},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-q1","x":240,"y":74,"w":50,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"Q3 '23"},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-q2","x":387,"y":74,"w":50,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"Q4 '23"},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-q3","x":533,"y":74,"w":50,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"Q1 '24"},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-q4","x":680,"y":74,"w":50,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"Q2 '24"},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-q5","x":827,"y":74,"w":50,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"Q3 '24"},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-q6","x":973,"y":74,"w":50,"color":"#8a93a6","size":10,"weight":400,"align":"left","text":"Q4 '24"},"a":21}
+{"t":"op","op":{"op":"box","id":"a22-hl","x":869,"y":30,"w":14,"h":50,"fill":"#e6e9ef","radius":7},"a":21}
+{"t":"op","op":{"op":"box","id":"a22-hr","x":966,"y":30,"w":14,"h":50,"fill":"#e6e9ef","radius":7},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-date","x":1140,"y":26,"w":180,"color":"#e6e9ef","size":13,"weight":500,"align":"left","text":"Aug 2024 – Oct 2024"},"a":21}
+{"t":"op","op":{"op":"box","id":"bg","x":0,"y":0,"w":1440,"h":120,"fill":"#141821","stroke":"#2a3040","radius":12},"a":22}
+{"t":"op","op":{"op":"text","id":"title","x":20,"y":6,"w":200,"color":"#8a93a6","size":10,"weight":600,"align":"left","text":"IMPORT SOURCES"},"a":22}
+{"t":"op","op":{"op":"box","id":"dz","x":20,"y":22,"w":168,"h":82,"fill":"#0b0e14","stroke":"#2a3040","radius":8},"a":22}
+{"t":"op","op":{"op":"box","id":"a22-segbg","x":1140,"y":50,"w":148,"h":30,"fill":"#0b0e14","radius":8},"a":21}
+{"t":"op","op":{"op":"text","id":"a22-seg1","x":1146,"y":56,"w":44,"color":"#e6e9ef","size":12,"weight":500,"align":"center","text":"Qtr"},"a":21}
+{"t":"op","op":{"op":"text","id":"dz-t","x":36,"y":56,"w":140,"color":"#8a93a6","size":11,"weight":400,"align":"center","text":"Drop PDFs / URLs / folders"},"a":22}
+{"t":"op","op":{"op":"box","id":"sep","x":204,"y":22,"w":1,"h":82,"fill":"#2a3040"},"a":22}
+{"t":"op","op":{"op":"text","id":"a22-seg2","x":1192,"y":56,"w":44,"color":"#8a93a6","size":12,"weight":400,"align":"center","text":"Mo"},"a":21}
+{"t":"op","op":{"op":"box","id":"f1i","x":220,"y":28,"w":12,"h":12,"fill":"#a079ff","radius":2},"a":22}
+{"t":"op","op":{"op":"text","id":"a22-seg3","x":1238,"y":56,"w":44,"color":"#8a93a6","size":12,"weight":400,"align":"center","text":"Wk"},"a":21}
+{"t":"op","op":{"op":"text","id":"f1n","x":238,"y":22,"w":210,"color":"#e6e9ef","size":11,"weight":500,"align":"left","text":"Transformer_Survey.pdf"},"a":22}
+{"t":"op","op":{"op":"text","id":"f1s","x":238,"y":36,"w":80,"color":"#8a93a6","size":9,"weight":400,"align":"left","text":"2.4 MB"},"a":22}
+{"t":"op","op":{"op":"text","id":"a22-filter","x":1300,"y":58,"w":124,"color":"#8a93a6","size":12,"weight":400,"align":"left","text":"All notes · 1,247"},"a":21}
+{"t":"op","op":{"op":"text","id":"f1t","x":370,"y":28,"w":88,"color":"#a079ff","size":9,"weight":500,"align":"left","text":"→ NLP · Transformers"},"a":22}
+{"t":"op","op":{"op":"box","id":"f2i","x":220,"y":56,"w":12,"h":12,"fill":"#a079ff","radius":2},"a":22}
+{"t":"op","op":{"op":"done"},"a":21}
+{"t":"agent","a":21,"status":"done","ops":21,"usage":{"in":1011,"out":6101,"cost":0.0049296},"error":null}
+{"t":"gov","active":2,"launched":24,"done":22,"failed":0,"retries":0,"tokIn":21940,"tokOut":72458,"cost":0.0620225,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"text","id":"f2n","x":238,"y":50,"w":250,"color":"#e6e9ef","size":11,"weight":500,"align":"left","text":"Attention_Is_All_You_Need.pdf"},"a":22}
+{"t":"op","op":{"op":"text","id":"f2s","x":238,"y":64,"w":80,"color":"#8a93a6","size":9,"weight":400,"align":"left","text":"1.1 MB"},"a":22}
+{"t":"op","op":{"op":"text","id":"f2t","x":370,"y":56,"w":100,"color":"#a079ff","size":9,"weight":500,"align":"left","text":"→ Architecture"},"a":22}
+{"t":"op","op":{"op":"box","id":"f3i","x":220,"y":84,"w":12,"h":12,"fill":"#5b8cff","radius":2},"a":22}
+{"t":"op","op":{"op":"text","id":"f3n","x":238,"y":78,"w":220,"color":"#e6e9ef","size":11,"weight":500,"align":"left","text":"arxiv.org/abs/2401.04088"},"a":22}
+{"t":"op","op":{"op":"text","id":"f3s","x":238,"y":92,"w":80,"color":"#8a93a6","size":9,"weight":400,"align":"left","text":"URL · 12 KB"},"a":22}
+{"t":"op","op":{"op":"text","id":"f3t","x":370,"y":84,"w":80,"color":"#5b8cff","size":9,"weight":500,"align":"left","text":"→ Papers"},"a":22}
+{"t":"op","op":{"op":"text","id":"cnt","x":1100,"y":76,"w":100,"color":"#8a93a6","size":10,"weight":400,"align":"right","text":"3 files ready"},"a":22}
+{"t":"op","op":{"op":"button","id":"btn-c","x":1220,"y":42,"w":76,"h":36,"fill":"#1e2433","color":"#8a93a6","radius":8,"text":"Cancel"},"a":22}
+{"t":"op","op":{"op":"button","id":"btn-i","x":1308,"y":42,"w":100,"h":36,"fill":"#5b8cff","color":"#ffffff","radius":8,"text":"Ingest 3"},"a":22}
+{"t":"op","op":{"op":"done"},"a":22}
+{"t":"agent","a":22,"status":"done","ops":21,"usage":{"in":1006,"out":4529,"cost":0.00374885},"error":null}
+{"t":"gov","active":1,"launched":24,"done":23,"failed":0,"retries":0,"tokIn":22946,"tokOut":76987,"cost":0.06577135,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"op","op":{"op":"box","id":"a21-bg","x":0,"y":0,"w":360,"h":190,"fill":"#141821","stroke":"#232b3a","radius":12},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-title","x":16,"y":12,"w":150,"color":"#8a93a6","size":11,"weight":600,"align":"left","text":"ASK THE GRAPH"},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-dot","x":172,"y":16,"w":6,"h":6,"fill":"#a079ff","radius":3},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-status","x":184,"y":12,"w":160,"color":"#6b7385","size":10,"weight":500,"align":"right","text":"cortex-1 · streaming…"},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-div","x":16,"y":27,"w":328,"h":1,"fill":"#232b3a","radius":0},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-bubble","x":16,"y":30,"w":328,"h":60,"fill":"#1a2130","stroke":"#2b3448","radius":10},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-bar","x":16,"y":30,"w":4,"h":60,"fill":"#5b8cff","radius":2},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-ans","x":28,"y":40,"w":300,"color":"#dbe1ec","size":12,"weight":400,"align":"left","text":"Higher precision tightens the posterior; the variational free energy falls as the encoding sharpens."},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-c1","x":28,"y":70,"w":52,"h":16,"fill":"#1e2637","stroke":"#313d57","radius":8},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-c1t","x":34,"y":72,"w":42,"color":"#a9b4c9","size":10,"weight":500,"align":"left","text":"[1] FEP"},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-c2","x":86,"y":70,"w":66,"h":16,"fill":"#1e2637","stroke":"#313d57","radius":8},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-c2t","x":92,"y":72,"w":56,"color":"#a9b4c9","size":10,"weight":500,"align":"left","text":"[2] Figs. 3"},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-chip","x":16,"y":100,"w":118,"h":22,"fill":"#18202f","stroke":"#33436a","radius":11},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-chipt","x":28,"y":104,"w":96,"color":"#7ea2ff","size":11,"weight":500,"align":"left","text":"View sources (2)"},"a":20}
+{"t":"op","op":{"op":"box","id":"a21-input","x":16,"y":128,"w":244,"h":44,"fill":"#0d1119","stroke":"#29324a","radius":10},"a":20}
+{"t":"op","op":{"op":"text","id":"a21-iptext","x":28,"y":140,"w":212,"color":"#7c8598","size":12,"weight":400,"align":"left","text":"how is precision related to free energy?"},"a":20}
+{"t":"op","op":{"op":"button","id":"a21-send","x":268,"y":128,"w":76,"h":44,"fill":"#5b8cff","color":"#f4f7ff","radius":10,"text":"Send"},"a":20}
+{"t":"op","op":{"op":"done"},"a":20}
+{"t":"agent","a":20,"status":"done","ops":18,"usage":{"in":993,"out":10920,"cost":0.00853755},"error":null}
+{"t":"gov","active":0,"launched":24,"done":24,"failed":0,"retries":0,"tokIn":23939,"tokOut":87907,"cost":0.07430890000000001,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"gov","active":0,"launched":24,"done":24,"failed":0,"retries":0,"tokIn":23939,"tokOut":87907,"cost":0.07430890000000001,"backoffUntil":0,"concurrency":10,"rpm":120,"queued":0}
+{"t":"end","stopped":false}

@@ -1,0 +1,10 @@
+{
+  "name": "cursor-swarm",
+  "version": "0.1.0",
+  "description": "Watch a swarm of real LLM agents build a UI live, one cursor per agent.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": { "start": "node server.mjs" },
+  "engines": { "node": ">=20" }
+}

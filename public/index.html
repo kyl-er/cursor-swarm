@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cursor Swarm</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 20'%3E%3Cpath d='M1 1l5.2 17 2.6-7.2 7.2-2.6z' fill='%234f6bff' stroke='%23fff' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #f4f4f2; --panel: #ffffff; --ink: #141416; --dim: #66666d; --line: #dedeD9; --chip: #ecece8;
+  --ok: #15803d; --warn: #b45309; --bad: #b91c1c; --accent: #2f4bff; --on-accent: #ffffff; --stage: #e6e6e2;
+  --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0f0f11; --panel: #17171a; --ink: #ededee; --dim: #8f8f98; --line: #2a2a30; --chip: #222227;
+    --ok: #4ade80; --warn: #fbbf24; --bad: #f87171; --accent: #8093ff; --on-accent: #0b0d1a; --stage: #0a0a0c; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; display: grid; grid-template-rows: auto 1fr; }
+[hidden] { display: none !important; }
+
+/* header */
+header { background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 14px; display: grid; gap: 10px; }
+.bar { display: flex; gap: 8px; align-items: center; }
+.brand { display: flex; align-items: center; gap: 7px; font-weight: 700; font-size: 15px; white-space: nowrap; margin-right: 6px; }
+.brand svg { flex: none; }
+#prompt { flex: 1 1 auto; min-width: 0; padding: 9px 12px; font-size: 14px; }
+.agents { display: flex; align-items: center; gap: 6px; color: var(--dim); font-size: 12px; white-space: nowrap; }
+input, select, button { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 7px 9px; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+input[type=number] { width: 60px; }
+button { cursor: pointer; font-weight: 600; white-space: nowrap; }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); padding: 9px 16px; }
+button.ghost { background: transparent; font-weight: 500; color: var(--dim); }
+button.ghost[aria-expanded=true] { color: var(--ink); background: var(--chip); }
+button.small { padding: 3px 9px; font-size: 12px; }
+.settings { display: flex; flex-wrap: wrap; gap: 10px 14px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.settings label { display: grid; gap: 3px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); }
+.settings .hint { align-self: end; color: var(--dim); font-size: 12px; padding-bottom: 8px; }
+
+/* stage */
+main { display: grid; grid-template-columns: minmax(0, 1fr) 350px; min-height: 0; }
+.stagecol { display: grid; grid-template-rows: auto auto 1fr; min-height: 0; min-width: 0; }
+.stagebar { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--line); min-width: 0; }
+.pill { flex: none; font: 700 10px var(--mono); letter-spacing: .08em; padding: 3px 8px; border-radius: 999px; background: var(--chip); color: var(--dim); display: inline-flex; align-items: center; gap: 6px; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.live { color: var(--ok); } .pill.live::before { animation: pulse 1.1s infinite; }
+.pill.replay { color: var(--accent); } .pill.mock { color: var(--warn); } .pill.err { color: var(--bad); } .pill.done { color: var(--ok); }
+@keyframes pulse { 50% { opacity: .25; } }
+#detail { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--dim); }
+#detail b { color: var(--ink); font-weight: 600; }
+.speed { flex: none; display: flex; align-items: center; gap: 6px; color: var(--dim); font-size: 12px; }
+.speed input { width: 90px; padding: 0; border: 0; background: none; accent-color: var(--accent); }
+#progress { height: 3px; background: var(--line); }
+#progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+#stageWrap { overflow: auto; background: var(--stage); padding: 18px; }
+#scaler { transform-origin: 0 0; position: relative; margin: 0 auto; }
+#page { position: relative; width: 1440px; min-height: 640px; background: #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgba(128,128,128,.25), 0 14px 44px rgba(0,0,0,.2); overflow: hidden; }
+#empty { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; color: #55555c; text-align: center; padding: 40px; font-family: system-ui, sans-serif; }
+#empty h2 { margin: 0; font-size: 40px; color: #17171a; letter-spacing: -.02em; }
+#empty p { margin: 0; font-size: 21px; max-width: 760px; line-height: 1.45; }
+#empty .chips { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 900px; }
+#empty .chips button { font-size: 19px; padding: 12px 20px; border-radius: 999px; background: #f1f1ee; border-color: #d8d8d3; color: #17171a; font-weight: 500; }
+#empty .chips button:hover { border-color: #2f4bff; }
+.region { position: absolute; }
+.frame { position: absolute; pointer-events: none; border: 1.5px dashed; opacity: .55; transition: opacity .6s; z-index: 5; }
+.frame b { position: absolute; left: 0; top: 0; font: 600 11px var(--mono); color: #fff; padding: 2px 6px; white-space: nowrap; }
+.frame.done { opacity: 0; }
+.frame.show { opacity: 1; transition: opacity .1s; border-style: solid; border-width: 2px; }
+.el { position: absolute; }
+.el.text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.2; }
+.el.button { display: grid; place-items: center; font-weight: 600; white-space: nowrap; overflow: hidden; }
+.el.image { background: repeating-linear-gradient(45deg, rgba(128,128,128,.16) 0 10px, rgba(128,128,128,.28) 10px 20px); display: grid; place-items: center; color: rgba(110,110,110,.95); font: 12px var(--mono); overflow: hidden; text-align: center; }
+.sel { outline: 1.5px solid var(--c); outline-offset: 1px; }
+.cursor { position: absolute; left: 0; top: 0; z-index: 10; pointer-events: none; will-change: transform; }
+.cursor svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.cursor span { position: absolute; left: 14px; top: 16px; font: 600 11px var(--mono); color: #fff; padding: 2px 6px; border-radius: 3px 8px 8px 8px; white-space: nowrap; }
+
+/* side panel */
+aside { background: var(--panel); border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto 1fr; min-height: 0; }
+#gov { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+#gov div { background: var(--panel); padding: 7px 10px; min-width: 0; }
+#gov small { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); white-space: nowrap; }
+#gov span { font: 600 13px var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tabs { display: flex; border-bottom: 1px solid var(--line); }
+.tabs button { flex: 1; border: 0; border-radius: 0; background: none; padding: 9px 8px; color: var(--dim); border-bottom: 2px solid transparent; font-weight: 600; }
+.tabs button[aria-selected=true] { color: var(--ink); border-bottom-color: var(--accent); }
+.panel { overflow: auto; min-height: 0; }
+.row { padding: 7px 12px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 3px 8px; align-items: center; }
+.row:hover { background: var(--chip); }
+.row i { width: 10px; height: 10px; border-radius: 50%; }
+.row .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .nm em { font-style: normal; font-weight: 400; color: var(--dim); font-family: var(--mono); font-size: 11px; }
+.row .st { font: 11px var(--mono); color: var(--dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row .st.working { color: var(--accent); } .row .st.done { color: var(--ok); } .row .st.failed { color: var(--bad); } .row .st.waiting { color: var(--warn); }
+.row .tail { grid-column: 1 / -1; font: 10.5px var(--mono); color: var(--dim); white-space: nowrap; overflow: hidden; direction: rtl; text-align: left; height: 15px; }
+.row .tail bdi { unicode-bidi: plaintext; }
+.row.quiet .tail { display: none; }
+.saved { padding: 10px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.saved.current { box-shadow: inset 3px 0 0 var(--accent); }
+.saved .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved .m { color: var(--dim); font-size: 11.5px; font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved .a { display: flex; gap: 6px; }
+.note { padding: 22px 16px; color: var(--dim); text-align: center; line-height: 1.5; }
+
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) 42vh; }
+  aside { border-left: 0; border-top: 1px solid var(--line); }
+  .bar { flex-wrap: wrap; } #prompt { flex-basis: 100%; order: 2; }
+  .brand { order: 1; flex: 1; } .agents { order: 3; } #go { order: 4; flex: 1; } #stop { order: 5; } #settingsToggle { order: 6; }
+  .speed span { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><svg width="16" height="18" viewBox="0 0 18 20" aria-hidden="true"><path d="M1 1l5.2 17 2.6-7.2 7.2-2.6z" fill="currentColor"/></svg>Cursor Swarm</div>
+    <input id="prompt" aria-label="Describe the page or app to build" placeholder="Describe a page or app to build, e.g. “Pricing page for a calm note-taking app”">
+    <label class="agents">Agents <input id="agents" type="number" min="1" max="48" value="24" title="One agent, one cursor, one region"></label>
+    <button id="go" class="primary">Run swarm</button>
+    <button id="stop" disabled>Stop</button>
+    <button id="settingsToggle" type="button" class="ghost" aria-expanded="false" aria-controls="settings">Settings</button>
+  </div>
+  <div class="settings" id="settings" hidden>
+    <label>Driver<select id="mode"><option value="pi">Live pi agents</option><option value="mock">Mock (no model)</option></select></label>
+    <label>Worker model<input id="model" list="models" value="cerebras/qwen-3.8-27b" size="26"></label>
+    <label>Director model<input id="director" list="models" value="cerebras/qwen-3.8-27b" size="26"></label>
+    <datalist id="models">
+      <option value="cerebras/qwen-3.8-27b">Qwen3.8 27B (Cerebras, fast)</option>
+      <option value="cerebras/gpt-oss-120b">GPT-OSS 120B (Cerebras)</option>
+      <option value="openrouter/anthropic/claude-haiku-4.5">Claude Haiku 4.5 (OpenRouter)</option>
+      <option value="opencode/claude-haiku-4-5">Claude Haiku 4.5 (OpenCode)</option>
+      <option value="opencode/claude-sonnet-5">Claude Sonnet 5 (OpenCode)</option>
+    </datalist>
+    <label>Parallel<input id="concurrency" type="number" min="1" max="48" value="10" title="Most worker agents calling the model at once"></label>
+    <label>Launches / min<input id="rpm" type="number" min="1" max="2000" value="120" title="Governor: cap on new model requests per minute"></label>
+    <span class="hint">Models are any <code>provider/model</code> your <code>pi</code> CLI can reach.</span>
+  </div>
+</header>
+<main>
+  <div class="stagecol">
+    <div class="stagebar">
+      <span id="pill" class="pill">IDLE</span>
+      <span id="detail">Nothing running</span>
+      <label class="speed"><span>Cursor speed</span><input id="speed" type="range" min="0.4" max="4" step="0.1" value="1"></label>
+    </div>
+    <div id="progress"><i></i></div>
+    <div id="stageWrap"><div id="scaler"><div id="page"></div></div></div>
+  </div>
+  <aside>
+    <div id="gov">
+      <div><small>Active</small><span id="gA">0</span></div>
+      <div><small>Queued</small><span id="gQ">0</span></div>
+      <div><small>Done</small><span id="gD">0</span></div>
+      <div><small>Retries</small><span id="gR">0</span></div>
+      <div><small>Tokens in</small><span id="gI">0</span></div>
+      <div><small>Tokens out</small><span id="gO">0</span></div>
+      <div><small>Cost</small><span id="gC">$0</span></div>
+      <div><small>Elapsed</small><span id="gT">–</span></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button id="tabAgents" role="tab" aria-selected="false" aria-controls="rows">Agents</button>
+      <button id="tabSaved" role="tab" aria-selected="true" aria-controls="saved">Saved runs</button>
+    </div>
+    <div id="rows" class="panel" role="tabpanel" hidden></div>
+    <div id="saved" class="panel" role="tabpanel"></div>
+  </aside>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const page = $('page'), scaler = $('scaler'), wrap = $('stageWrap'), list = $('rows');
+const FONTS = { sans: 'system-ui, -apple-system, "Segoe UI", sans-serif', serif: 'Georgia, "Times New Roman", serif', mono: 'ui-monospace, Menlo, monospace' };
+const EXAMPLES = ['Landing page for Tidepool, a calm note-taking app for researchers', 'Analytics dashboard for a coffee roastery', 'Pricing page for a developer API', 'Kanban project board for a film crew'];
+let agents = [], director = null, style = null, t0 = 0, timer = 0, running = false, failed = false;
+let replaying = false, replayToken = 0, sessions = [], currentId = null;
+const speed = () => +$('speed').value;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms / speed()));
+const hue = (i, n) => `hsl(${Math.round((i * 360) / Math.max(n, 1) + (i % 2) * 24) % 360} 78% 46%)`;
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+
+function fit() { const s = Math.min(1, (wrap.clientWidth - 36) / 1440); scaler.style.transform = `scale(${s})`; scaler.style.height = page.offsetHeight * s + 'px'; scaler.style.width = 1440 * s + 'px'; }
+addEventListener('resize', fit);
+
+function setState(kind, label, title, rest) {
+  $('pill').className = 'pill ' + kind; $('pill').textContent = label;
+  const d = $('detail'); d.replaceChildren();
+  if (title) d.append(el('b', '', title));
+  if (rest) d.append((title ? ' · ' : '') + rest);
+  d.title = [title, rest].filter(Boolean).join(' · ');
+}
+function progress() {
+  const n = agents.length, done = agents.filter((a) => ['done', 'failed'].includes(a.status) && !a.busy && !a.queue.length).length;
+  $('progress').firstElementChild.style.width = n ? (100 * done / n) + '%' : '0';
+  $('tabAgents').textContent = n ? `Agents ${done}/${n}` : 'Agents';
+}
+function tab(which) {
+  const ag = which === 'agents';
+  $('tabAgents').setAttribute('aria-selected', ag); $('tabSaved').setAttribute('aria-selected', !ag);
+  $('rows').hidden = !ag; $('saved').hidden = ag;
+}
+$('tabAgents').onclick = () => tab('agents'); $('tabSaved').onclick = () => tab('saved');
+
+function showEmpty() {
+  const box = el('div'); box.id = 'empty';
+  box.append(el('h2', '', 'Watch a swarm of agents build a UI'), el('p', '', 'A director splits your page into regions. One agent per region draws it live, each with its own cursor. Every stroke is a line a model wrote.'));
+  const chips = el('div', 'chips');
+  for (const ex of EXAMPLES) { const b = el('button', '', ex); b.onclick = () => { $('prompt').value = ex; $('prompt').focus(); }; chips.append(b); }
+  box.append(chips); page.append(box);
+}
+
+function row(name, sub, color) {
+  const r = el('div', 'row');
+  const dot = el('i'); dot.style.background = color;
+  const nm = el('div', 'nm', name); if (sub) { nm.append(' ', el('em', '', sub)); }
+  const st = el('div', 'st', 'queued');
+  const tl = el('div', 'tail'); const b = el('bdi'); tl.append(b);
+  r.append(dot, nm, st, tl); list.append(r);
+  return { el: r, st, tail: b, text: '' };
+}
+function setStatus(r, status, extra) { r.st.className = 'st ' + status; const word = status === 'done' ? '✓' : status; r.st.textContent = extra ? `${word} ${extra}` : word; r.el.classList.toggle('quiet', status === 'done' || status === 'queued'); }
+function tail(r, d) { r.text = (r.text + d).slice(-140); r.tail.textContent = r.text.replace(/\s+/g, ' '); }
+
+function reset() {
+  page.replaceChildren(); list.replaceChildren(); agents = []; style = null;
+  page.style.background = '#fff'; page.style.height = '640px';
+  for (const id of ['gA', 'gQ', 'gD', 'gR', 'gI', 'gO']) $(id).textContent = '0';
+  $('gC').textContent = '$0'; $('gT').textContent = '–';
+  director = row('Director', 'plans the regions', '#888');
+  progress(); fit();
+}
+
+function makeCursor(a) {
+  const c = el('div', 'cursor');
+  c.innerHTML = '<svg width="18" height="20" viewBox="0 0 18 20"><path d="M1 1l5.2 17 2.6-7.2 7.2-2.6z" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+  c.querySelector('path').setAttribute('fill', a.color);
+  const tag = el('span', '', a.name); tag.style.background = a.color; c.append(tag);
+  a.cx = a.r.x + a.r.w / 2; a.cy = a.r.y + a.r.h / 2;
+  c.style.transform = `translate(${a.cx}px,${a.cy}px)`; c.style.opacity = '0'; c.style.transition = 'opacity .3s';
+  page.append(c); return c;
+}
+async function moveTo(a, x, y, minMs = 0) {
+  const dist = Math.hypot(x - a.cx, y - a.cy);
+  const backlog = Math.min(4, 1 + a.queue.length / 5);
+  const ms = Math.max(minMs, Math.min(520, 90 + dist * 0.9)) / speed() / backlog;
+  a.cursor.style.opacity = '1';
+  a.cursor.style.transition = `transform ${ms}ms cubic-bezier(.3,.1,.2,1), opacity .3s`;
+  a.cursor.style.transform = `translate(${x}px,${y}px)`;
+  a.cx = x; a.cy = y;
+  await new Promise((r) => setTimeout(r, ms));
+}
+
+function applyProps(e, op) {
+  if (op.fill) e.style.background = op.fill;
+  if (op.stroke) e.style.border = `1px solid ${op.stroke}`;
+  if (op.radius !== undefined) e.style.borderRadius = op.radius + 'px';
+  if (op.color) e.style.color = op.color;
+  if (op.size) e.style.fontSize = op.size + 'px';
+  if (op.weight) e.style.fontWeight = op.weight;
+  if (op.align) e.style.textAlign = op.align;
+  if (op.x !== undefined) e.style.left = op.x + 'px';
+  if (op.y !== undefined) e.style.top = op.y + 'px';
+}
+async function typeInto(a, e, text) {
+  const step = Math.max(1, Math.ceil(text.length / 28));
+  for (let i = step; i < text.length + step; i += step) { e.textContent = text.slice(0, i); await sleep(14 / Math.min(4, 1 + a.queue.length / 5)); }
+}
+async function perform(a, op) {
+  const r = a.r;
+  if (op.op === 'done') { a.finished = true; return; }
+  if (op.op === 'update') {
+    const e = a.els.get(op.id); if (!e) return;
+    await moveTo(a, r.x + e.offsetLeft + e.offsetWidth / 2, r.y + e.offsetTop + e.offsetHeight / 2);
+    e.classList.add('sel'); applyProps(e, op);
+    if (op.w) e.style.width = op.w + 'px'; if (op.h) e.style.height = op.h + 'px';
+    if (op.text !== undefined) e.textContent = op.text;
+    await sleep(120); e.classList.remove('sel'); return;
+  }
+  const e = el('div', 'el ' + op.op); e.style.setProperty('--c', a.color);
+  a.els.get(op.id)?.remove(); a.els.set(op.id, e);
+  await moveTo(a, r.x + op.x, r.y + op.y);
+  applyProps(e, op); e.classList.add('sel'); a.region.append(e);
+  if (op.op === 'text') {
+    if (op.w) e.style.width = op.w + 'px';
+    if (!op.color && style) e.style.color = style.text;
+    await typeInto(a, e, op.text ?? '');
+  } else {
+    const w = op.w ?? 80, h = op.h ?? 40;
+    e.style.width = '0px'; e.style.height = '0px';
+    if (op.op === 'box' && !op.fill && !op.stroke) e.style.border = `1px solid ${style?.muted ?? '#999'}`;
+    const drag = Math.max(140, Math.min(420, Math.hypot(w, h) * 0.8));
+    const real = drag / speed() / Math.min(4, 1 + a.queue.length / 5);
+    e.style.transition = `width ${real}ms cubic-bezier(.3,.1,.2,1), height ${real}ms cubic-bezier(.3,.1,.2,1)`;
+    requestAnimationFrame(() => { e.style.width = w + 'px'; e.style.height = h + 'px'; });
+    await moveTo(a, r.x + op.x + w, r.y + op.y + h, drag);
+    e.style.transition = '';
+    if (op.op === 'button') { if (!op.fill && style) e.style.background = style.accent; if (!op.color) e.style.color = '#fff'; e.style.fontSize = Math.min(16, Math.max(12, h * 0.36)) + 'px'; await typeInto(a, e, op.text ?? ''); }
+    if (op.op === 'image') e.textContent = op.label ?? '';
+  }
+  e.classList.remove('sel');
+}
+async function pump(a) {
+  if (a.busy) return; a.busy = true;
+  const mine = agents;
+  while (a.queue.length && agents === mine) { const op = a.queue.shift(); try { await perform(a, op); } catch (e) { console.warn(e); } a.drawn++; paintAgent(a); }
+  a.busy = false;
+  if (a.finished || a.status === 'done' || a.status === 'failed') { a.frame.classList.add('done'); a.cursor.style.opacity = '0'; }
+  if (agents === mine) progress();
+}
+function paintAgent(a) {
+  const bits = [];
+  if (a.opsIn) bits.push(a.drawn < a.opsIn ? `${a.drawn}/${a.opsIn} ops` : `${a.opsIn} ops`);
+  if (a.usage) bits.push(a.usage.out >= 1000 ? (a.usage.out / 1000).toFixed(1) + 'k tok' : a.usage.out + ' tok');
+  setStatus(a.row, a.status, bits.join(' · '));
+}
+
+function onPlan(ev) {
+  style = ev.style;
+  page.style.background = style.bg; page.style.height = ev.pageH + 'px'; page.style.fontFamily = FONTS[style.font]; page.style.color = style.text;
+  $('detail').firstElementChild?.remove(); $('detail').prepend(el('b', '', ev.title));
+  ev.regions.forEach((r, i) => {
+    const color = hue(i, ev.regions.length);
+    const region = el('div', 'region');
+    Object.assign(region.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' });
+    const frame = el('div', 'frame');
+    Object.assign(frame.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px', borderColor: color });
+    const tag = el('b', '', r.component ? `${i + 1} ${r.name} · ${r.component}` : `${i + 1} ${r.name}`); tag.style.background = color; frame.append(tag);
+    page.append(region, frame);
+    const a = { i, r, color, name: `agent-${i + 1}`, region, frame, queue: [], els: new Map(), busy: false, drawn: 0, opsIn: 0, status: 'queued', usage: null };
+    a.row = row(`${i + 1}. ${r.name}`, r.component, color); a.row.el.title = r.brief; a.row.el.classList.add('quiet');
+    a.row.el.onmouseenter = () => frame.classList.add('show'); a.row.el.onmouseleave = () => frame.classList.remove('show');
+    a.cursor = makeCursor(a);
+    agents.push(a);
+  });
+  progress(); fit();
+}
+
+function setForm(c) {
+  if (!c) return;
+  if (c.prompt) $('prompt').value = c.prompt;
+  if (c.agents) $('agents').value = c.agents;
+  if (c.mode) $('mode').value = c.mode;
+  if (c.model) $('model').value = c.model;
+  if (c.director) $('director').value = c.director;
+  if (c.concurrency) $('concurrency').value = c.concurrency;
+  if (c.rpm) $('rpm').value = c.rpm;
+}
+function buttons() { $('go').disabled = running || replaying; $('stop').disabled = !(running || replaying); renderSaved(); }
+
+function onEvent(ev) {
+  switch (ev.t) {
+    case 'run': {
+      reset(); failed = false; t0 = ev.id; currentId = ev.id; setForm(ev.cfg); tab('agents');
+      clearInterval(timer);
+      if (replaying) setState('replay', 'REPLAY', '', 'saved run, no model calls');
+      else {
+        running = true;
+        setState(ev.cfg.mode === 'mock' ? 'mock' : 'live', ev.cfg.mode === 'mock' ? 'MOCK' : 'LIVE', '', ev.cfg.mode === 'mock' ? 'scripted, no model is running' : `director is planning on ${ev.cfg.director}`);
+        timer = setInterval(() => { $('gT').textContent = Math.round((Date.now() - t0) / 1000) + 's'; }, 500);
+      }
+      buttons(); break;
+    }
+    case 'director':
+      setStatus(director, ev.status, ev.model ?? (ev.usage ? `${ev.usage.out.toLocaleString()} tok` : ''));
+      if (ev.note) { director.el.title = ev.note; director.el.classList.remove('quiet'); tail(director, ' [' + ev.note + '] '); }
+      break;
+    case 'reui': director.el.title = `Designing with ${ev.count} ReUI components (${ev.source})`; break;
+    case 'plan': {
+      onPlan(ev);
+      const d = $('detail'); const t = d.firstElementChild; d.replaceChildren(); if (t) d.append(t);
+      d.append(` · ${ev.regions.length} agents` + (replaying ? ' · saved run, no model calls' : ''));
+      d.title = d.textContent; break;
+    }
+    case 'tok': { const r = ev.a === -1 ? director : agents[ev.a]?.row; if (r) tail(r, ev.d || ev.th || ''); break; }
+    case 'op': { const a = agents[ev.a]; if (!a) break; a.opsIn++; a.queue.push(ev.op); pump(a); break; }
+    case 'agent': {
+      const a = agents[ev.a]; if (!a) break;
+      a.status = ev.status; if (ev.usage) a.usage = ev.usage;
+      if (ev.error) { a.row.el.title = ev.error; if (ev.status !== 'done') tail(a.row, ' [' + ev.error + '] '); }
+      paintAgent(a); pump(a); progress(); break;
+    }
+    case 'gov':
+      $('gA').textContent = ev.active; $('gQ').textContent = ev.queued; $('gD').textContent = ev.done + (ev.failed ? ` (${ev.failed}✗)` : '');
+      $('gR').textContent = ev.retries; $('gI').textContent = ev.tokIn.toLocaleString(); $('gO').textContent = ev.tokOut.toLocaleString();
+      $('gC').textContent = '$' + ev.cost.toFixed(4); break;
+    case 'end':
+      clearInterval(timer);
+      if (ev.ms) $('gT').textContent = Math.round(ev.ms / 1000) + 's';
+      if (!replaying) {
+        running = false;
+        if (!failed && ev.stopped) { $('pill').className = 'pill err'; $('pill').textContent = 'STOPPED'; }
+        else if (!failed) { const mine = agents; $('pill').textContent = 'DRAWING'; whenDrawn(() => agents === mine && !running, () => { $('pill').className = 'pill done'; $('pill').textContent = 'DONE'; }); }
+        setTimeout(loadSessions, 400);
+      }
+      buttons(); break;
+    case 'error': failed = true; setState('err', 'ERROR', '', ev.text); break;
+  }
+}
+
+/* saved runs */
+async function loadSessions() {
+  try { sessions = await (await fetch('/sessions')).json(); } catch { sessions = []; }
+  renderSaved();
+}
+function renderSaved() {
+  const box = $('saved'); box.replaceChildren();
+  $('tabSaved').textContent = sessions.length ? `Saved runs ${sessions.length}` : 'Saved runs';
+  if (!sessions.length) { box.append(el('div', 'note', 'Runs are saved here automatically. Replay one any time without calling a model.')); return; }
+  const busy = running || replaying;
+  for (const s of sessions) {
+    const card = el('div', 'saved' + (String(s.id) === String(currentId) ? ' current' : ''));
+    const when = new Date(s.mtime).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const t = el('div', 't', s.title || '(untitled)'); t.title = s.cfg?.prompt ?? '';
+    const model = s.cfg?.mode === 'mock' ? 'mock' : (s.cfg?.model ?? '').split('/').pop();
+    const m = el('div', 'm', `${s.regions} agents · ${s.ops} ops · ${model} · ${when}${s.ended ? '' : ' · partial'}`);
+    const a = el('div', 'a');
+    const rp = el('button', 'small', 'Replay'); rp.title = 'Watch this run again. No model calls.'; rp.disabled = busy; rp.onclick = () => replay(s.id);
+    const rr = el('button', 'small ghost', 'Run again live'); rr.title = 'Start a new live run with the same prompt and settings.'; rr.disabled = busy;
+    rr.onclick = () => { setForm(s.cfg); $('go').click(); };
+    a.append(rp, rr); card.append(t, m, a); box.append(card);
+  }
+}
+async function replay(id) {
+  let evs = []; try { evs = await (await fetch('/session?id=' + encodeURIComponent(id))).json(); } catch {}
+  const stream = evs.filter((e) => e.t !== 'meta');
+  if (!stream.length) return;
+  const token = ++replayToken; replaying = true; buttons();
+  let i = 0;
+  const step = () => {
+    if (token !== replayToken) return;
+    if (i >= stream.length) { whenDrawn(() => token === replayToken, () => { replaying = false; $('pill').textContent = 'REPLAYED'; buttons(); }); return; }
+    const e = stream[i++];
+    onEvent(e);
+    setTimeout(step, (e.t === 'op' ? 35 : 8) / speed());
+  };
+  step();
+}
+// Model output arrives faster than cursors draw it; wait for the cursors before calling a run finished.
+function whenDrawn(still, then) {
+  const t = setInterval(() => {
+    if (!still()) return clearInterval(t);
+    if (agents.every((a) => !a.busy && !a.queue.length)) { clearInterval(t); progress(); then(); }
+  }, 200);
+}
+function stopReplay() {
+  replayToken++; replaying = false;
+  for (const a of agents) a.queue.length = 0;
+  $('pill').className = 'pill err'; $('pill').textContent = 'STOPPED'; buttons();
+}
+
+/* controls */
+const post = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body ?? {}) });
+$('go').onclick = () => {
+  const prompt = $('prompt').value.trim();
+  if (!prompt) { $('prompt').focus(); return; }
+  post('/run', { prompt, agents: +$('agents').value, mode: $('mode').value, model: $('model').value.trim(), director: $('director').value.trim(), concurrency: +$('concurrency').value, rpm: +$('rpm').value });
+};
+$('stop').onclick = () => (replaying ? stopReplay() : post('/stop'));
+$('prompt').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !running && !replaying) $('go').click(); });
+$('settingsToggle').onclick = () => { const s = $('settings'); s.hidden = !s.hidden; $('settingsToggle').setAttribute('aria-expanded', !s.hidden); fit(); };
+
+showEmpty(); fit(); loadSessions();
+const es = new EventSource('/events');
+es.onmessage = (m) => { if (!replaying) onEvent(JSON.parse(m.data)); };
+</script>
+</body>
+</html>

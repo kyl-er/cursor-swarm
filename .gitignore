@@ -1,0 +1,7 @@
+.server.pid
+.server.log
+reui-catalog.json
+node_modules/
+# Runs are saved locally; only the demo run is published.
+sessions/*
+!sessions/1794792594093.jsonl
